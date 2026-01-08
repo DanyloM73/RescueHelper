@@ -1,26 +1,31 @@
 package com.danylom73.rescuehelper.data.nearby.handler
 
-import android.os.Build
-import com.google.android.gms.nearby.connection.ConnectionLifecycleCallback
-import com.google.android.gms.nearby.connection.ConnectionsClient
+import com.danylom73.rescuehelper.data.nearby.NearbyEventEmitter
+import com.danylom73.rescuehelper.domain.nearby.NearbyEvent
+import com.danylom73.rescuehelper.domain.nearby.NearbyHost
 import com.google.android.gms.nearby.connection.DiscoveredEndpointInfo
 import com.google.android.gms.nearby.connection.EndpointDiscoveryCallback
 
 class EndpointDiscoveryHandler(
-    private val client: ConnectionsClient,
-    private val connectionCallback: ConnectionLifecycleCallback
+    private val emit: NearbyEventEmitter
 ) : EndpointDiscoveryCallback() {
 
     override fun onEndpointFound(
         endpointId: String,
         info: DiscoveredEndpointInfo
     ) {
-        client.requestConnection(
-            Build.MODEL,
-            endpointId,
-            connectionCallback
+        emit(
+            NearbyEvent.HostFound(
+                NearbyHost(
+                    endpointId = endpointId,
+                    name = info.endpointName
+                )
+            )
         )
     }
 
-    override fun onEndpointLost(endpointId: String) = Unit
+    override fun onEndpointLost(endpointId: String) {
+        emit(NearbyEvent.HostLost(endpointId))
+    }
 }
+

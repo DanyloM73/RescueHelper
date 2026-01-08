@@ -44,8 +44,7 @@ class NearbyRepositoryImpl @Inject constructor(
     private val connectionHandler =
         ConnectionLifecycleHandler(client, payloadHandler, emit)
 
-    private val discoveryHandler =
-        EndpointDiscoveryHandler(client, connectionHandler)
+    private val discoveryHandler = EndpointDiscoveryHandler(emit)
 
     override fun startAdvertising() {
         client.startAdvertising(
@@ -67,6 +66,15 @@ class NearbyRepositoryImpl @Inject constructor(
                 .build()
         )
     }
+
+    override fun connectToHost(endpointId: String) {
+        client.requestConnection(
+            Build.MODEL,
+            endpointId,
+            connectionHandler
+        )
+    }
+
 
     override fun sendMessage(message: String) {
         val endpoint = requireNotNull(currentEndpoint)
