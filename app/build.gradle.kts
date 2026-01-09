@@ -16,6 +16,19 @@ android {
         version = release(36)
     }
 
+    flavorDimensions += "role"
+    productFlavors {
+        create("user") {
+            dimension = "role"
+            applicationIdSuffix = ".user"
+        }
+
+        create("responder") {
+            dimension = "role"
+            applicationIdSuffix = ".responder"
+        }
+    }
+
     defaultConfig {
         applicationId = "com.danylom73.rescuehelper"
         minSdk = 24
@@ -44,6 +57,17 @@ android {
     }
     buildFeatures {
         compose = true
+    }
+
+    applicationVariants.all {
+        val variant = this
+        variant.outputs
+            .map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
+            .forEach { output ->
+                val outputFileName = "rescue-helper-${variant.baseName}-${variant.versionName}.apk"
+                println("OutputFileName: $outputFileName")
+                output.outputFileName = outputFileName
+            }
     }
 }
 

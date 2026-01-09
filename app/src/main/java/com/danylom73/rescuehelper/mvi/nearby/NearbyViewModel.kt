@@ -2,8 +2,11 @@ package com.danylom73.rescuehelper.mvi.nearby
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.danylom73.rescuehelper.core.role.AppRole
+import com.danylom73.rescuehelper.core.role.RoleProvider
 import com.danylom73.rescuehelper.domain.nearby.NearbyEvent
 import com.danylom73.rescuehelper.domain.nearby.NearbyRepository
+import com.danylom73.rescuehelper.presentation.screen.config.NearbyScreenUiConfig
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +19,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NearbyViewModel @Inject constructor(
-    private val repository: NearbyRepository
+    private val repository: NearbyRepository,
+    private val roleProvider: RoleProvider,
+    private val nearbyScreenUiConfig: NearbyScreenUiConfig
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(NearbyState())
@@ -25,22 +30,28 @@ class NearbyViewModel @Inject constructor(
     private val _sideEffect = Channel<NearbySideEffect>(Channel.BUFFERED)
     val sideEffect = _sideEffect.receiveAsFlow()
 
+    val uiConfig = nearbyScreenUiConfig
+
     init {
         observeRepository()
     }
 
     fun process(intent: NearbyIntent) {
         when (intent) {
-            is NearbyIntent.StartAdvertising -> {
-                sendSideEffect(NearbySideEffect.ShowToast("Advertising started"))
-                repository.startAdvertising()
-                reduce { copy(isAdvertising = true) }
-            }
+            is NearbyIntent.StartConnecting -> {
+                when (roleProvider.role) {
+                    AppRole.RESPONDER -> {
+                        sendSideEffect(NearbySideEffect.ShowToast("Discovery started"))
+                        repository.startDiscovery()
+                        reduce { copy(isDiscovering = true) }
+                    }
 
-            is NearbyIntent.StartDiscovery -> {
-                sendSideEffect(NearbySideEffect.ShowToast("Discovery started"))
-                repository.startDiscovery()
-                reduce { copy(isDiscovering = true) }
+                    AppRole.USER ->  {
+                        sendSideEffect(NearbySideEffect.ShowToast("Advertising started"))
+                        repository.startAdvertising()
+                        reduce { copy(isAdvertising = true) }
+                    }
+                }
             }
 
             is NearbyIntent.SendMessage -> {

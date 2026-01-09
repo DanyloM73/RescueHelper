@@ -30,6 +30,7 @@ fun NearbyScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current
+    val config = viewModel.uiConfig
 
     LaunchedEffect(Unit) {
         viewModel.sideEffect.collect { effect ->
@@ -51,8 +52,10 @@ fun NearbyScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        Text(config.title)
+
         if (state.connectedEndpointId == null) {
-            if (state.isDiscovering) {
+            if (state.isDiscovering && config.showHosts) {
                 HostList(
                     hosts = state.discoveredHosts,
                     onHostClick = {
@@ -63,12 +66,8 @@ fun NearbyScreen(
                 )
             }
 
-            Button(onClick = { viewModel.process(NearbyIntent.StartAdvertising) }) {
-                Text("Start Advertising")
-            }
-
-            Button(onClick = { viewModel.process(NearbyIntent.StartDiscovery) }) {
-                Text("Start Discovery")
+            Button(onClick = { viewModel.process(NearbyIntent.StartConnecting) }) {
+                Text(config.primaryButtonText)
             }
         } else {
             Text("Connected to ${state.connectedEndpointId}")
