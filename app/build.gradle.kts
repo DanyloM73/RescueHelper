@@ -64,7 +64,7 @@ android {
         variant.outputs
             .map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
             .forEach { output ->
-                val outputFileName = "rescue-helper-${variant.baseName}-${variant.versionName}.apk"
+                val outputFileName = "rescue-helper-${variant.baseName}-v${variant.versionName}.apk"
                 println("OutputFileName: $outputFileName")
                 output.outputFileName = outputFileName
             }
@@ -91,6 +91,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material.icons.extended)
 
     // Test
     testImplementation(libs.junit)
