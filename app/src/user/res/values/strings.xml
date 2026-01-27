@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- NEARBY SCREEN -->
+    <string name="nearby_title_default">Request rescue</string>
+    <string name="nearby_title_connected">Rescuers are connected</string>
+    <string name="nearby_no_connect_text">Unable to connect right now</string>
+    <string name="nearby_available_devices_text">Nearby rescuers</string>
+    <string name="nearby_searching_text">Waiting for rescuers to connect</string>
+    <string name="nearby_connected_text">Connected to rescuers</string>
+    <string name="nearby_start_button_text">Request help</string>
+    <string name="nearby_stop_button_text">Cancel request</string>
+</resources>

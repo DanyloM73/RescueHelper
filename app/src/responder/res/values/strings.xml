@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- NEARBY SCREEN -->
+    <string name="nearby_title_default">Search for victim</string>
+    <string name="nearby_title_connected">Victim found</string>
+    <string name="nearby_no_connect_text">Search disabled</string>
+    <string name="nearby_available_devices_text">Available devices</string>
+    <string name="nearby_searching_text">Searching for devices</string>
+    <string name="nearby_connected_text">Connected to victim</string>
+    <string name="nearby_start_button_text">Start search</string>
+    <string name="nearby_stop_button_text">Stop search</string>
+</resources>

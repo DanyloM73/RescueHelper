@@ -23,9 +23,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.danylom73.rescuehelper.R
 import com.danylom73.rescuehelper.mvi.nearby.NearbyState
 import com.danylom73.rescuehelper.presentation.screen.config.NearbyScreenUiConfig
 
@@ -43,12 +45,17 @@ fun NearbyComposable(
             .padding(32.dp)
     ) {
         Text(
-            text = config.title,
+            text =
+                if (state.connectedEndpointId != null)
+                    stringResource(R.string.nearby_title_connected)
+                else
+                    stringResource(R.string.nearby_title_default),
             style = MaterialTheme.typography.titleLarge.copy(
                 color = MaterialTheme.colorScheme.primary
             ),
+            textAlign = TextAlign.Center,
             modifier = Modifier
-                .align(Alignment.CenterHorizontally)
+                .fillMaxWidth()
                 .padding(top = 24.dp, bottom = 32.dp)
         )
 
@@ -112,7 +119,7 @@ fun NearbyComposable(
                         config.showHosts
                     ) {
                         Text(
-                            text = "Available hosts:",
+                            text = stringResource(R.string.nearby_available_devices_text),
                             style = MaterialTheme.typography.bodyMedium.copy(
                                 fontWeight = FontWeight.ExtraBold,
                                 color = MaterialTheme.colorScheme.background
@@ -131,11 +138,13 @@ fun NearbyComposable(
                         Text(
                             text = when {
                                 !state.connectedEndpointId.isNullOrEmpty() ->
-                                    "Connected to ${state.connectedEndpointId}"
-                                state.isAdvertising ->
-                                    "Host is available to connect"
+                                    stringResource(R.string.nearby_connected_text)
+
+                                state.isAdvertising || state.isDiscovering ->
+                                    stringResource(R.string.nearby_searching_text)
+
                                 else ->
-                                    "No connect established"
+                                    stringResource(R.string.nearby_no_connect_text)
                             },
                             style = MaterialTheme.typography.bodyLarge.copy(
                                 color = MaterialTheme.colorScheme.background
@@ -155,7 +164,7 @@ fun NearbyComposable(
                 .padding(top = 32.dp, bottom = 24.dp)
         ) {
             Text(
-                text = config.primaryButtonText,
+                text = stringResource(R.string.nearby_start_button_text),
                 style = MaterialTheme.typography.bodyMedium.copy(
                     color = MaterialTheme.colorScheme.background
                 )

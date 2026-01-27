@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- NEARBY SCREEN -->
+    <string name="nearby_title_default">Запит на порятунок</string>
+    <string name="nearby_title_connected">Рятувальники підключені</string>
+    <string name="nearby_no_connect_text">Наразі неможливо підключитися</string>
+    <string name="nearby_available_devices_text">Рятувальники поблизу</string>
+    <string name="nearby_searching_text">Очікування підключення рятувальників</string>
+    <string name="nearby_connected_text">З’єднання з рятувальниками встановлено</string>
+    <string name="nearby_start_button_text">Покликати на допомогу</string>
+    <string name="nearby_stop_button_text">Скасувати запит</string>
+</resources>

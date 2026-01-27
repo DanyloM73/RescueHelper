@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- NEARBY SCREEN -->
+    <string name="nearby_title_default">Пошук потерпілого</string>
+    <string name="nearby_title_connected">Знайдено потерпілого</string>
+    <string name="nearby_no_connect_text">Пошук вимкнено</string>
+    <string name="nearby_available_devices_text">Доступні пристрої</string>
+    <string name="nearby_searching_text">Пошук доступних пристроїв</string>
+    <string name="nearby_connected_text">Підключено до потерпілого</string>
+    <string name="nearby_start_button_text">Розпочати пошук</string>
+    <string name="nearby_stop_button_text">Зупинити пошук</string>
+</resources>
