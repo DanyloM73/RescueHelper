@@ -67,6 +67,15 @@ class NearbyRepositoryImpl @Inject constructor(
         )
     }
 
+    override fun stopAdvertising() {
+        client.stopAdvertising()
+    }
+
+    override fun stopDiscovery() {
+        client.stopDiscovery()
+    }
+
+
     override fun connectToHost(endpointId: String) {
         client.requestConnection(
             Build.MODEL,

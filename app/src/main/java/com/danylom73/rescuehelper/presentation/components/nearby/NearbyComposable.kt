@@ -37,6 +37,7 @@ fun NearbyComposable(
     config: NearbyScreenUiConfig,
     state: NearbyState,
     onStartConnecting: () -> Unit = {},
+    onStopConnecting: () -> Unit = {},
     onConnect: (String) -> Unit = {}
 ) {
     Column(
@@ -158,13 +159,18 @@ fun NearbyComposable(
         }
 
         Button(
-            onClick = onStartConnecting,
+            onClick = {
+                if (state.isAdvertising || state.isDiscovering) onStopConnecting()
+                else onStartConnecting()
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 32.dp, bottom = 24.dp)
         ) {
             Text(
-                text = stringResource(R.string.nearby_start_button_text),
+                text =
+                    if (state.isAdvertising || state.isDiscovering) stringResource(R.string.nearby_stop_button_text)
+                    else stringResource(R.string.nearby_start_button_text),
                 style = MaterialTheme.typography.bodyMedium.copy(
                     color = MaterialTheme.colorScheme.background
                 )

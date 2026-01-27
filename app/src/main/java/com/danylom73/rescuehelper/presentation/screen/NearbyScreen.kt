@@ -42,6 +42,9 @@ fun NearbyScreen(
         onStartConnecting = {
             viewModel.process(NearbyIntent.StartConnecting)
         },
+        onStopConnecting = {
+            viewModel.process(NearbyIntent.StopConnecting)
+        },
         onConnect = {
             viewModel.process(NearbyIntent.ConnectToHost(it))
         }

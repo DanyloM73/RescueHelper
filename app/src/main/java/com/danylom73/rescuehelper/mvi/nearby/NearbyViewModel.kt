@@ -54,6 +54,22 @@ class NearbyViewModel @Inject constructor(
                 }
             }
 
+            is NearbyIntent.StopConnecting -> {
+                when (roleProvider.role) {
+                    AppRole.RESPONDER -> {
+                        sendSideEffect(NearbySideEffect.ShowToast("Discovery stopped"))
+                        repository.stopDiscovery()
+                        reduce { copy(isDiscovering = false) }
+                    }
+
+                    AppRole.USER ->  {
+                        sendSideEffect(NearbySideEffect.ShowToast("Advertising stopped"))
+                        repository.stopAdvertising()
+                        reduce { copy(isAdvertising = false) }
+                    }
+                }
+            }
+
             is NearbyIntent.SendMessage -> {
                 repository.sendMessage(intent.message)
             }
