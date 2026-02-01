@@ -1,5 +1,8 @@
 package com.danylom73.rescuehelper.presentation.screen
 
+import android.content.Context
+import android.hardware.camera2.CameraCharacteristics
+import android.hardware.camera2.CameraManager
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -8,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.danylom73.rescuehelper.domain.nearby.NearbyCommand
 import com.danylom73.rescuehelper.mvi.nearby.NearbyIntent
 import com.danylom73.rescuehelper.mvi.nearby.NearbySideEffect
 import com.danylom73.rescuehelper.mvi.nearby.NearbyViewModel
@@ -31,6 +35,9 @@ fun NearbyScreen(
                         effect.message,
                         Toast.LENGTH_LONG
                     ).show()
+
+                is NearbySideEffect.SetFlashlight ->
+                    setFlashlight(context, effect.enabled)
             }
         }
     }
@@ -50,6 +57,27 @@ fun NearbyScreen(
         },
         onDisconnect = {
             viewModel.process(NearbyIntent.Disconnect)
+        },
+        onSetFlashlight = {
+            viewModel.process(
+                NearbyIntent.SendCommand(
+                    if (it) NearbyCommand.TURN_ON_FLASHLIGHT
+                    else NearbyCommand.TURN_OFF_FLASHLIGHT
+                )
+            )
         }
     )
+}
+
+private fun setFlashlight(context: Context, enabled: Boolean) {
+    val cameraManager = context.getSystemService(Context.CAMERA_SERVICE) as CameraManager
+
+    val cameraId = cameraManager.cameraIdList.firstOrNull { id ->
+        cameraManager.getCameraCharacteristics(id)
+            .get(CameraCharacteristics.FLASH_INFO_AVAILABLE) == true
+    }
+
+    cameraId?.let {
+        cameraManager.setTorchMode(it, enabled)
+    }
 }

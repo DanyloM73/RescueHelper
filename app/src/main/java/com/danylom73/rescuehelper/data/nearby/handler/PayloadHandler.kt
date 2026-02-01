@@ -1,6 +1,7 @@
 package com.danylom73.rescuehelper.data.nearby.handler
 
 import com.danylom73.rescuehelper.data.nearby.NearbyEventEmitter
+import com.danylom73.rescuehelper.domain.nearby.NearbyCommand
 import com.danylom73.rescuehelper.domain.nearby.NearbyEvent
 import com.google.android.gms.nearby.connection.Payload
 import com.google.android.gms.nearby.connection.PayloadCallback
@@ -11,9 +12,11 @@ class PayloadHandler(
 ) : PayloadCallback() {
 
     override fun onPayloadReceived(endpointId: String, payload: Payload) {
-        payload.asBytes()
-            ?.decodeToString()
-            ?.let { emit(NearbyEvent.MessageReceived(it)) }
+        payload.asBytes()?.let { bytes ->
+            val command = NearbyCommand.fromName(String(bytes))
+
+            command?.let { emit(NearbyEvent.CommandReceived(it)) }
+        }
     }
 
     override fun onPayloadTransferUpdate(

@@ -7,6 +7,5 @@ data class NearbyState(
     val isDiscovering: Boolean = false,
     val discoveredHosts: List<NearbyHost> = emptyList(),
     val connectedEndpointId: String? = null,
-    val messages: List<String> = emptyList(),
     val error: String? = null
 )

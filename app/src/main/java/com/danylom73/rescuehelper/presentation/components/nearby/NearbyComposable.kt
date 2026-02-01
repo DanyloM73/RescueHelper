@@ -22,6 +22,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -40,8 +44,13 @@ fun NearbyComposable(
     onStartConnecting: () -> Unit = {},
     onStopConnecting: () -> Unit = {},
     onConnect: (String) -> Unit = {},
-    onDisconnect: () -> Unit = {}
+    onDisconnect: () -> Unit = {},
+    onSetFlashlight: (Boolean) -> Unit = {}
 ) {
+    var enabledFlashlight by remember {
+        mutableStateOf(false)
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -160,7 +169,31 @@ fun NearbyComposable(
             }
         }
 
-        AnimatedVisibility(state.connectedEndpointId == null || config.canDisconnect) {
+        AnimatedVisibility(
+            state.connectedEndpointId != null && config.canDisconnect
+        ) {
+            Button(
+                onClick = {
+                    enabledFlashlight = !enabledFlashlight
+                    onSetFlashlight(enabledFlashlight)
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text =
+                        if (!enabledFlashlight)
+                            stringResource(R.string.nearby_turn_on_flashlight)
+                        else stringResource(R.string.nearby_turn_off_flashlight),
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        color = MaterialTheme.colorScheme.background
+                    )
+                )
+            }
+        }
+
+        AnimatedVisibility(
+            state.connectedEndpointId == null || config.canDisconnect
+        ) {
             Button(
                 onClick = {
                     when {
@@ -179,7 +212,7 @@ fun NearbyComposable(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 32.dp, bottom = 24.dp)
+                    .padding(top = 12.dp, bottom = 24.dp)
             ) {
                 Text(
                     text = when {

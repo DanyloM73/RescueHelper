@@ -5,6 +5,7 @@ import android.os.Build
 import com.danylom73.rescuehelper.data.nearby.handler.ConnectionLifecycleHandler
 import com.danylom73.rescuehelper.data.nearby.handler.EndpointDiscoveryHandler
 import com.danylom73.rescuehelper.data.nearby.handler.PayloadHandler
+import com.danylom73.rescuehelper.domain.nearby.NearbyCommand
 import com.danylom73.rescuehelper.domain.nearby.NearbyEvent
 import com.danylom73.rescuehelper.domain.nearby.NearbyRepository
 import com.google.android.gms.nearby.Nearby
@@ -111,12 +112,13 @@ class NearbyRepositoryImpl @Inject constructor(
     }
 
 
-    override fun sendMessage(message: String) {
-        val endpoint = requireNotNull(currentEndpoint)
-        client.sendPayload(
-            endpoint,
-            Payload.fromBytes(message.toByteArray())
-        )
+    override fun sendCommand(command: NearbyCommand) {
+        currentEndpoint?.let {
+            client.sendPayload(
+                it,
+                Payload.fromBytes(command.name.toByteArray())
+            )
+        }
     }
 
     override fun observeEvents(): Flow<NearbyEvent> = events

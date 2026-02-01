@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.danylom73.rescuehelper.core.role.AppRole
 import com.danylom73.rescuehelper.core.role.RoleProvider
+import com.danylom73.rescuehelper.domain.nearby.NearbyCommand
 import com.danylom73.rescuehelper.domain.nearby.NearbyEvent
 import com.danylom73.rescuehelper.domain.nearby.NearbyRepository
 import com.danylom73.rescuehelper.presentation.screen.config.NearbyScreenUiConfig
@@ -70,9 +71,9 @@ class NearbyViewModel @Inject constructor(
                 }
             }
 
-            is NearbyIntent.SendMessage -> {
-                repository.sendMessage(intent.message)
-            }
+            is NearbyIntent.SendCommand ->
+                repository.sendCommand(intent.command)
+
 
             is NearbyIntent.ConnectToHost -> {
                 sendSideEffect(NearbySideEffect.ShowToast("Connecting to host"))
@@ -121,8 +122,14 @@ class NearbyViewModel @Inject constructor(
                             )
                         }
 
-                    is NearbyEvent.MessageReceived ->
-                        reduce { copy(messages = messages + event.message) }
+                    is NearbyEvent.CommandReceived -> {
+                        when (event.command) {
+                            NearbyCommand.TURN_ON_FLASHLIGHT ->
+                                sendSideEffect(NearbySideEffect.SetFlashlight(true))
+                            NearbyCommand.TURN_OFF_FLASHLIGHT ->
+                                sendSideEffect(NearbySideEffect.SetFlashlight(false))
+                        }
+                    }
 
                     is NearbyEvent.Error -> {
                         reduce { copy(error = event.error) }
