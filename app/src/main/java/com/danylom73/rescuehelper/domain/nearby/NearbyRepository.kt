@@ -8,6 +8,7 @@ interface NearbyRepository {
     fun stopAdvertising()
     fun stopDiscovery()
     fun connectToHost(endpointId: String)
+    fun disconnect()
     fun sendMessage(message: String)
     fun observeEvents(): Flow<NearbyEvent>
 }

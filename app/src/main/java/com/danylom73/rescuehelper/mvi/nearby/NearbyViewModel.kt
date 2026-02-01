@@ -78,6 +78,11 @@ class NearbyViewModel @Inject constructor(
                 sendSideEffect(NearbySideEffect.ShowToast("Connecting to host"))
                 repository.connectToHost(intent.endpointId)
             }
+
+            is NearbyIntent.Disconnect -> {
+                sendSideEffect(NearbySideEffect.ShowToast("Disconnecting"))
+                repository.disconnect()
+            }
         }
     }
 
@@ -103,16 +108,26 @@ class NearbyViewModel @Inject constructor(
                     is NearbyEvent.Connected ->
                         reduce {
                             copy(
+                                isDiscovering = false,
                                 connectedEndpointId = event.endpointId,
                                 discoveredHosts = emptyList()
+                            )
+                        }
+
+                    is NearbyEvent.Disconnected ->
+                        reduce {
+                            copy(
+                                connectedEndpointId = null
                             )
                         }
 
                     is NearbyEvent.MessageReceived ->
                         reduce { copy(messages = messages + event.message) }
 
-                    is NearbyEvent.Error ->
+                    is NearbyEvent.Error -> {
                         reduce { copy(error = event.error) }
+                        sendSideEffect(NearbySideEffect.ShowToast(event.error))
+                    }
                 }
             }
         }

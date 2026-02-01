@@ -47,6 +47,9 @@ fun NearbyScreen(
         },
         onConnect = {
             viewModel.process(NearbyIntent.ConnectToHost(it))
+        },
+        onDisconnect = {
+            viewModel.process(NearbyIntent.Disconnect)
         }
     )
 }

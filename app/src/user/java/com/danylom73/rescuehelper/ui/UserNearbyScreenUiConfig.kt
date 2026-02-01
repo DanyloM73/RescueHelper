@@ -5,4 +5,5 @@ import javax.inject.Inject
 
 class UserNearbyScreenUiConfig @Inject constructor() : NearbyScreenUiConfig {
     override val showHosts = false
+    override val canDisconnect: Boolean = false
 }

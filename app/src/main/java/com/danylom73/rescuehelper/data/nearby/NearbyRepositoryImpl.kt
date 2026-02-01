@@ -46,6 +46,24 @@ class NearbyRepositoryImpl @Inject constructor(
 
     private val discoveryHandler = EndpointDiscoveryHandler(emit)
 
+    init {
+        CoroutineScope(Dispatchers.IO).launch {
+            events.collect { event ->
+                when (event) {
+                    is NearbyEvent.Connected -> {
+                        currentEndpoint = event.endpointId
+                    }
+
+                    NearbyEvent.Disconnected -> {
+                        currentEndpoint = null
+                    }
+
+                    else -> Unit
+                }
+            }
+        }
+    }
+
     override fun startAdvertising() {
         client.startAdvertising(
             Build.MODEL,
@@ -75,13 +93,21 @@ class NearbyRepositoryImpl @Inject constructor(
         client.stopDiscovery()
     }
 
-
     override fun connectToHost(endpointId: String) {
         client.requestConnection(
-            Build.MODEL,
+            Build.DEVICE,
             endpointId,
             connectionHandler
         )
+    }
+
+    override fun disconnect() {
+        currentEndpoint?.let {
+            client.disconnectFromEndpoint(it)
+        }
+
+        client.stopAllEndpoints()
+        currentEndpoint = null
     }
 
 

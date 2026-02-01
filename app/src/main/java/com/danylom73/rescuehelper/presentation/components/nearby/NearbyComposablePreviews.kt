@@ -31,6 +31,7 @@ private fun ResponderNoConnectPreview() {
             NearbyComposable(
                 config = object : NearbyScreenUiConfig {
                     override val showHosts: Boolean = true
+                    override val canDisconnect: Boolean = true
                 },
                 state = NearbyState()
             )
@@ -57,6 +58,7 @@ private fun ResponderConnectedPreview() {
             NearbyComposable(
                 config = object : NearbyScreenUiConfig {
                     override val showHosts: Boolean = true
+                    override val canDisconnect: Boolean = true
                 },
                 state = NearbyState(
                     connectedEndpointId = "1234"
@@ -85,6 +87,7 @@ private fun ResponderSearchHostAvailablePreview() {
             NearbyComposable(
                 config = object : NearbyScreenUiConfig {
                     override val showHosts: Boolean = true
+                    override val canDisconnect: Boolean = true
                 },
                 state = NearbyState(
                     isDiscovering = true,
@@ -118,6 +121,7 @@ private fun ResponderSearchHostUnavailablePreview() {
             NearbyComposable(
                 config = object : NearbyScreenUiConfig {
                     override val showHosts: Boolean = true
+                    override val canDisconnect: Boolean = true
                 },
                 state = NearbyState(
                     isDiscovering = true
@@ -146,6 +150,7 @@ fun UserNoConnectPreview() {
             NearbyComposable(
                 config = object : NearbyScreenUiConfig {
                     override val showHosts: Boolean = false
+                    override val canDisconnect: Boolean = false
                 },
                 state = NearbyState()
             )
@@ -172,6 +177,7 @@ fun UserConnectedPreview() {
             NearbyComposable(
                 config = object : NearbyScreenUiConfig {
                     override val showHosts: Boolean = false
+                    override val canDisconnect: Boolean = false
                 },
                 state = NearbyState(
                     connectedEndpointId = "4321"
@@ -200,6 +206,7 @@ fun UserHostEnabledPreview() {
             NearbyComposable(
                 config = object : NearbyScreenUiConfig {
                     override val showHosts: Boolean = false
+                    override val canDisconnect: Boolean = false
                 },
                 state = NearbyState(
                     isAdvertising = true

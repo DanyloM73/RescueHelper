@@ -23,6 +23,7 @@ class ConnectionLifecycleHandler(
         result: ConnectionResolution
     ) {
         if (result.status.isSuccess) {
+            client.stopDiscovery()
             emit(NearbyEvent.Connected(endpointId))
         } else {
             emit(NearbyEvent.Error("Connection failed"))
@@ -30,6 +31,6 @@ class ConnectionLifecycleHandler(
     }
 
     override fun onDisconnected(endpointId: String) {
-        emit(NearbyEvent.Error("Disconnected from $endpointId"))
+        emit(NearbyEvent.Disconnected)
     }
 }

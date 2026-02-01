@@ -1,5 +1,6 @@
 package com.danylom73.rescuehelper.presentation.components.nearby
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -38,7 +39,8 @@ fun NearbyComposable(
     state: NearbyState,
     onStartConnecting: () -> Unit = {},
     onStopConnecting: () -> Unit = {},
-    onConnect: (String) -> Unit = {}
+    onConnect: (String) -> Unit = {},
+    onDisconnect: () -> Unit = {}
 ) {
     Column(
         modifier = modifier
@@ -158,23 +160,42 @@ fun NearbyComposable(
             }
         }
 
-        Button(
-            onClick = {
-                if (state.isAdvertising || state.isDiscovering) onStopConnecting()
-                else onStartConnecting()
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 32.dp, bottom = 24.dp)
-        ) {
-            Text(
-                text =
-                    if (state.isAdvertising || state.isDiscovering) stringResource(R.string.nearby_stop_button_text)
-                    else stringResource(R.string.nearby_start_button_text),
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    color = MaterialTheme.colorScheme.background
+        AnimatedVisibility(state.connectedEndpointId == null || config.canDisconnect) {
+            Button(
+                onClick = {
+                    when {
+                        state.isAdvertising || state.isDiscovering -> {
+                            onStopConnecting()
+                        }
+
+                        state.connectedEndpointId != null && config.canDisconnect -> {
+                            onDisconnect()
+                        }
+
+                        else -> {
+                            onStartConnecting()
+                        }
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 32.dp, bottom = 24.dp)
+            ) {
+                Text(
+                    text = when {
+                        state.isAdvertising || state.isDiscovering ->
+                            stringResource(R.string.nearby_stop_button_text)
+
+                        state.connectedEndpointId != null && config.canDisconnect ->
+                            stringResource(R.string.nearby_disconnect_button_text)
+
+                        else -> stringResource(R.string.nearby_start_button_text)
+                    },
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        color = MaterialTheme.colorScheme.background
+                    )
                 )
-            )
+            }
         }
     }
 }
