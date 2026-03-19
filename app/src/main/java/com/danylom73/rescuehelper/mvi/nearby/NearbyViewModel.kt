@@ -22,7 +22,7 @@ import javax.inject.Inject
 class NearbyViewModel @Inject constructor(
     private val repository: NearbyRepository,
     private val roleProvider: RoleProvider,
-    private val nearbyScreenUiConfig: NearbyScreenUiConfig
+    nearbyScreenUiConfig: NearbyScreenUiConfig
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(NearbyState())

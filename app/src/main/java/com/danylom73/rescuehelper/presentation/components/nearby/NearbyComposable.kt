@@ -55,7 +55,7 @@ fun NearbyComposable(
 
     Box(Modifier.fillMaxSize()) {
         AnimatedVisibility(
-            visible = state.isAdvertising || state.isDiscovering,
+            visible = (state.isAdvertising || state.isDiscovering) && state.connectedEndpointId == null,
             enter = fadeIn(),
             exit = fadeOut()
         ) {

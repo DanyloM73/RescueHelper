@@ -1,4 +1,4 @@
-package com.danylom73.rescuehelper.presentation.components.nearby
+package com.danylom73.rescuehelper.presentation.components.nearby.previews
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.danylom73.rescuehelper.domain.nearby.NearbyHost
 import com.danylom73.rescuehelper.mvi.nearby.NearbyState
+import com.danylom73.rescuehelper.presentation.components.nearby.NearbyComposable
 import com.danylom73.rescuehelper.presentation.screen.config.NearbyScreenUiConfig
 import com.danylom73.rescuehelper.presentation.ui.theme.RescueHelperTheme
 

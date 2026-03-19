@@ -44,8 +44,7 @@ fun CyclingIcon(
             transitionSpec = {
                 fadeIn(animationSpec = tween(300)) togetherWith
                         fadeOut(animationSpec = tween(300))
-            },
-            label = "icon-switch"
+            }
         ) { icon ->
             Icon(
                 imageVector = icon,
