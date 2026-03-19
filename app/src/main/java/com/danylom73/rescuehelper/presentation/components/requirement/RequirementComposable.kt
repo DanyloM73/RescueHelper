@@ -88,7 +88,7 @@ fun RequirementComposable(
                         RequirementListItem(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clickable { onRequirementClick(item) },
+                                .clickable { if (!item.isGranted) onRequirementClick(item) },
                             requirement = item,
                             spaced = id != requirements.lastIndex
                         )

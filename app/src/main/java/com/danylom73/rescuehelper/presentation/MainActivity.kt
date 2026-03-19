@@ -8,7 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
-import com.danylom73.rescuehelper.presentation.screen.NearbyScreen
+import androidx.navigation.compose.rememberNavController
+import com.danylom73.rescuehelper.presentation.navigation.NavigationGraph
 import com.danylom73.rescuehelper.presentation.ui.theme.RescueHelperTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -18,11 +19,15 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val navController = rememberNavController()
             RescueHelperTheme {
                 Scaffold (
                     modifier = Modifier.fillMaxSize()
                 ) { paddingValues ->
-                    NearbyScreen(Modifier.padding(paddingValues))
+                    NavigationGraph(
+                        navHostController = navController,
+                        modifier = Modifier.padding(paddingValues)
+                    )
                 }
             }
         }
