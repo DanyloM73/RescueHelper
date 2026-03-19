@@ -12,4 +12,16 @@
     <string name="nearby_disconnect_button_text">Disconnect</string>
     <string name="nearby_turn_on_flashlight">Turn on flashlight</string>
     <string name="nearby_turn_off_flashlight">Turn off flashlight</string>
+
+    <!-- REQUIREMENT SCREEN -->
+    <string name="requirement_title">Granting permissions</string>
+    <string name="requirement_permission_category_title">Permission</string>
+    <string name="requirement_feature_category_title">Feature</string>
+    <string name="requirement_bluetooth_permission_title">Bluetooth permission</string>
+    <string name="requirement_location_permission_title">Location permission</string>
+    <string name="requirement_nearby_permission_title">Nearby permission</string>
+    <string name="requirement_bluetooth_feature_title">Bluetooth</string>
+    <string name="requirement_location_feature_title">Location</string>
+    <string name="requirement_wifi_feature_title">Wi-Fi</string>
+    <string name="requirement_continue_button_text">Continue</string>
 </resources>
