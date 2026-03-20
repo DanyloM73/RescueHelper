@@ -30,7 +30,7 @@ class RequirementRepositoryImpl @Inject constructor(
     override fun check(): List<Requirement> = listOf(
         Requirement(
             RequirementType.NearbyPermission,
-            hasNearbyPermission()
+            hasNearbyPermission() && hasBluetoothPermission()
         ),
         Requirement(
             RequirementType.LocationPermission,
@@ -95,6 +95,22 @@ class RequirementRepositoryImpl @Inject constructor(
             context,
             Manifest.permission.ACCESS_FINE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
+
+    private fun hasBluetoothPermission(): Boolean =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.BLUETOOTH_SCAN
+            ) == PackageManager.PERMISSION_GRANTED &&
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.BLUETOOTH_CONNECT
+            ) == PackageManager.PERMISSION_GRANTED &&
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.BLUETOOTH_ADVERTISE
+            ) == PackageManager.PERMISSION_GRANTED
+        } else true
 
     private fun isBluetoothEnabled(): Boolean {
         val manager = context.getSystemService(BluetoothManager::class.java)

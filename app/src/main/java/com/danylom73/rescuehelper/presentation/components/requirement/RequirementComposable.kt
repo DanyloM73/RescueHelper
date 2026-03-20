@@ -37,7 +37,7 @@ fun RequirementComposable(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(32.dp)
+            .padding(24.dp)
     ) {
         Text(
             text = stringResource(R.string.requirement_title),
@@ -47,7 +47,7 @@ fun RequirementComposable(
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 24.dp, bottom = 32.dp)
+                .padding(top = 8.dp, bottom = 32.dp)
         )
 
         if (state.requirements.isEmpty()) {

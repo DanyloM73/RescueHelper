@@ -36,6 +36,15 @@ fun RequirementListItem(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
+        Icon(
+            imageVector = requirement.type.icon,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.size(20.dp)
+        )
+
+        Spacer(Modifier.width(8.dp))
+
         Text(
             text = stringResource(requirement.type.titleRes),
             style = MaterialTheme.typography.bodyMedium.copy(
