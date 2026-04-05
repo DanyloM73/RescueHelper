@@ -13,19 +13,22 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import com.danylom73.rescuehelper.R
 import com.danylom73.rescuehelper.domain.requirement.Requirement
 import com.danylom73.rescuehelper.mvi.requirement.RequirementState
+import com.danylom73.rescuehelper.presentation.components.base.BaseTopBar
 import com.danylom73.rescuehelper.presentation.ui.theme.AppTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RequirementComposable(
     modifier: Modifier = Modifier,
@@ -33,90 +36,86 @@ fun RequirementComposable(
     onRequirementClick: (Requirement) -> Unit,
     onContinueClick: () -> Unit
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(AppTheme.dimens.spacingMedium)
-    ) {
-        Text(
-            text = stringResource(R.string.requirement_title),
-            style = AppTheme.typography.titleLarge.copy(
-                color = AppTheme.colors.primary
-            ),
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = AppTheme.dimens.spacingSmall, bottom = AppTheme.dimens.spacingLarge)
-        )
-
-        if (state.requirements.isEmpty()) {
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
-            }
-        } else {
-            LazyColumn(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth()
-            ) {
-                state.requirements.forEach { (category, requirements) ->
-                    item {
-                        Text(
-                            text = stringResource(category.titleRes),
-                            style = AppTheme.typography.bodyLarge.copy(
-                                color = AppTheme.colors.primary,
-                                fontWeight = FontWeight.Bold
+    Scaffold(
+        topBar = {
+            BaseTopBar(stringResource(R.string.requirement_title))
+        }
+    ) { innerPadding ->
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(AppTheme.dimens.spacingMedium)
+        ) {
+            if (state.requirements.isEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                ) {
+                    state.requirements.forEach { (category, requirements) ->
+                        item {
+                            Text(
+                                text = stringResource(category.titleRes),
+                                style = AppTheme.typography.bodyLarge.copy(
+                                    color = AppTheme.colors.primary,
+                                    fontWeight = FontWeight.Bold
+                                )
                             )
-                        )
 
-                        HorizontalDivider(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = AppTheme.dimens.spacingRegular),
-                            thickness = AppTheme.dimens.thicknessSmall,
-                            color = AppTheme.colors.primary
-                        )
-                    }
+                            HorizontalDivider(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = AppTheme.dimens.spacingRegular),
+                                thickness = AppTheme.dimens.thicknessSmall,
+                                color = AppTheme.colors.primary
+                            )
+                        }
 
-                    itemsIndexed(requirements) { id, item ->
-                        RequirementListItem(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable { if (!item.isGranted) onRequirementClick(item) },
-                            requirement = item,
-                            spaced = id != requirements.lastIndex
-                        )
-                    }
+                        itemsIndexed(requirements) { id, item ->
+                            RequirementListItem(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable { if (!item.isGranted) onRequirementClick(item) },
+                                requirement = item,
+                                spaced = id != requirements.lastIndex
+                            )
+                        }
 
-                    item {
-                        Spacer(Modifier.height(AppTheme.dimens.spacingLarge))
+                        item {
+                            Spacer(Modifier.height(AppTheme.dimens.spacingLarge))
+                        }
                     }
                 }
-            }
 
-            Button(
-                onClick = { onContinueClick() },
-                modifier = Modifier.fillMaxWidth(),
-                enabled = state.requirements.values.all { list ->
-                    list.all { it.isGranted || it.type.isOptional }
-                },
-                colors = ButtonDefaults.buttonColors().copy(
-                    disabledContainerColor = AppTheme.colors.primary.copy(
-                        alpha = 0.5f
+                Button(
+                    onClick = { onContinueClick() },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = state.requirements.values.all { list ->
+                        list.all { it.isGranted || it.type.isOptional }
+                    },
+                    colors = ButtonDefaults.buttonColors().copy(
+                        disabledContainerColor = AppTheme.colors.primary.copy(
+                            alpha = 0.5f
+                        )
                     )
-                )
-            ) {
-                Text(
-                    text = stringResource(R.string.requirement_continue_button_text),
-                    style = AppTheme.typography.bodyMedium.copy(
-                        color = AppTheme.colors.background
+                ) {
+                    Text(
+                        text = stringResource(R.string.requirement_continue_button_text),
+                        style = AppTheme.typography.bodyMedium.copy(
+                            color = AppTheme.colors.background
+                        )
                     )
-                )
+                }
             }
         }
     }

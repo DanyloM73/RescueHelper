@@ -19,16 +19,16 @@ val Typography = Typography(
     bodyMedium = TextStyle(
         fontFamily = monserratFontFamily,
         fontWeight = FontWeight.Bold,
-        fontSize = 16.sp
+        fontSize = 14.sp
     ),
     bodyLarge = TextStyle(
         fontFamily = monserratFontFamily,
         fontWeight = FontWeight.Normal,
-        fontSize = 18.sp
+        fontSize = 16.sp
     ),
     titleLarge = TextStyle(
         fontFamily = monserratFontFamily,
         fontWeight = FontWeight.ExtraBold,
-        fontSize = 32.sp
+        fontSize = 24.sp
     )
 )
