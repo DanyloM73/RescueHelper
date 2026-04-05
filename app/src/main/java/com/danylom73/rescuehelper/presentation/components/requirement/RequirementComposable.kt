@@ -14,7 +14,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,10 +21,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import com.danylom73.rescuehelper.R
 import com.danylom73.rescuehelper.domain.requirement.Requirement
 import com.danylom73.rescuehelper.mvi.requirement.RequirementState
+import com.danylom73.rescuehelper.presentation.ui.theme.AppTheme
 
 @Composable
 fun RequirementComposable(
@@ -37,17 +36,17 @@ fun RequirementComposable(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(24.dp)
+            .padding(AppTheme.dimens.spacingMedium)
     ) {
         Text(
             text = stringResource(R.string.requirement_title),
-            style = MaterialTheme.typography.titleLarge.copy(
-                color = MaterialTheme.colorScheme.primary
+            style = AppTheme.typography.titleLarge.copy(
+                color = AppTheme.colors.primary
             ),
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 8.dp, bottom = 32.dp)
+                .padding(top = AppTheme.dimens.spacingSmall, bottom = AppTheme.dimens.spacingLarge)
         )
 
         if (state.requirements.isEmpty()) {
@@ -69,8 +68,8 @@ fun RequirementComposable(
                     item {
                         Text(
                             text = stringResource(category.titleRes),
-                            style = MaterialTheme.typography.bodyLarge.copy(
-                                color = MaterialTheme.colorScheme.primary,
+                            style = AppTheme.typography.bodyLarge.copy(
+                                color = AppTheme.colors.primary,
                                 fontWeight = FontWeight.Bold
                             )
                         )
@@ -78,9 +77,9 @@ fun RequirementComposable(
                         HorizontalDivider(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 16.dp),
-                            thickness = 2.dp,
-                            color = MaterialTheme.colorScheme.primary
+                                .padding(vertical = AppTheme.dimens.spacingRegular),
+                            thickness = AppTheme.dimens.thicknessSmall,
+                            color = AppTheme.colors.primary
                         )
                     }
 
@@ -95,7 +94,7 @@ fun RequirementComposable(
                     }
 
                     item {
-                        Spacer(Modifier.height(32.dp))
+                        Spacer(Modifier.height(AppTheme.dimens.spacingLarge))
                     }
                 }
             }
@@ -107,15 +106,15 @@ fun RequirementComposable(
                     list.all { it.isGranted || it.type.isOptional }
                 },
                 colors = ButtonDefaults.buttonColors().copy(
-                    disabledContainerColor = MaterialTheme.colorScheme.primary.copy(
+                    disabledContainerColor = AppTheme.colors.primary.copy(
                         alpha = 0.5f
                     )
                 )
             ) {
                 Text(
                     text = stringResource(R.string.requirement_continue_button_text),
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        color = MaterialTheme.colorScheme.background
+                    style = AppTheme.typography.bodyMedium.copy(
+                        color = AppTheme.colors.background
                     )
                 )
             }

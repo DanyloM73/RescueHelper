@@ -10,7 +10,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -19,8 +18,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.danylom73.rescuehelper.domain.nearby.NearbyHost
+import com.danylom73.rescuehelper.presentation.ui.theme.AppTheme
 
 @Composable
 fun HostList(
@@ -39,21 +38,21 @@ fun HostList(
 
             Text(
                 text = "${host.name} (${host.endpointId})",
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    color = MaterialTheme.colorScheme.background
+                style = AppTheme.typography.bodyMedium.copy(
+                    color = AppTheme.colors.background
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
                     .then(
                         if (showBorder) {
                             Modifier.border(
-                                width = 4.dp,
-                                color = MaterialTheme.colorScheme.background,
-                                shape = RoundedCornerShape(8.dp)
+                                width = AppTheme.dimens.thicknessRegular,
+                                color = AppTheme.colors.background,
+                                shape = RoundedCornerShape(AppTheme.dimens.radiusSmall)
                             )
                         } else Modifier
                     )
-                    .padding(8.dp)
+                    .padding(AppTheme.dimens.spacingSmall)
                     .clickable {
                         when {
                             isSelected -> onHostChosen(host)
@@ -63,17 +62,17 @@ fun HostList(
             )
 
             if (index != hosts.lastIndex) {
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(AppTheme.dimens.spacingSmall))
 
                 HorizontalDivider(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 8.dp),
-                    thickness = 1.dp,
-                    color = MaterialTheme.colorScheme.background
+                        .padding(horizontal = AppTheme.dimens.spacingSmall),
+                    thickness = AppTheme.dimens.thicknessExtraSmall,
+                    color = AppTheme.colors.background
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(AppTheme.dimens.spacingSmall))
             }
         }
     }

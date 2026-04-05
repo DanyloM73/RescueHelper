@@ -5,6 +5,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 
 private val DarkColorScheme = darkColorScheme(
     primary = lightYellow,
@@ -30,9 +31,27 @@ fun RescueHelperTheme(
         else -> LightColorScheme
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content
-    )
+    val dimens = Dimens()
+
+    CompositionLocalProvider(LocalDimens provides dimens) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = Typography,
+            content = content
+        )
+    }
+}
+
+object AppTheme {
+    val dimens: Dimens
+        @Composable
+        get() = LocalDimens.current
+
+    val colors
+        @Composable
+        get() = MaterialTheme.colorScheme
+
+    val typography
+        @Composable
+        get() = MaterialTheme.typography
 }

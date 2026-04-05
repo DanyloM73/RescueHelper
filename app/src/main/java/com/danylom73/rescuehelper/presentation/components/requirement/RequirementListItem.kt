@@ -14,14 +14,13 @@ import androidx.compose.material.icons.outlined.Clear
 import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material.icons.outlined.PriorityHigh
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.danylom73.rescuehelper.domain.requirement.Requirement
+import com.danylom73.rescuehelper.presentation.ui.theme.AppTheme
 import com.danylom73.rescuehelper.presentation.ui.theme.green
 import com.danylom73.rescuehelper.presentation.ui.theme.red
 import com.danylom73.rescuehelper.presentation.ui.theme.yellow
@@ -39,25 +38,25 @@ fun RequirementListItem(
         Icon(
             imageVector = requirement.type.icon,
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(20.dp)
+            tint = AppTheme.colors.primary,
+            modifier = Modifier.size(AppTheme.dimens.iconSizeMedium)
         )
 
-        Spacer(Modifier.width(8.dp))
+        Spacer(Modifier.width(AppTheme.dimens.spacingSmall))
 
         Text(
             text = stringResource(requirement.type.titleRes),
-            style = MaterialTheme.typography.bodyMedium.copy(
-                color = MaterialTheme.colorScheme.primary
+            style = AppTheme.typography.bodyMedium.copy(
+                color = AppTheme.colors.primary
             ),
             modifier = Modifier.weight(1f)
         )
 
-        Spacer(Modifier.width(16.dp))
+        Spacer(Modifier.width(AppTheme.dimens.spacingRegular))
 
         Box(
             modifier = Modifier
-                .size(16.dp)
+                .size(AppTheme.dimens.iconSizeRegular)
                 .background(
                     color = when {
                         requirement.isGranted -> green
@@ -75,31 +74,31 @@ fun RequirementListItem(
                     else -> Icons.Outlined.Clear
                 },
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.background,
-                modifier = Modifier.size(10.dp)
+                tint = AppTheme.colors.background,
+                modifier = Modifier.size(AppTheme.dimens.iconSizeSmall)
             )
         }
 
         if (!requirement.isGranted) {
-            Spacer(Modifier.width(12.dp))
+            Spacer(Modifier.width(AppTheme.dimens.spacingSmallerRegular))
 
             Box(
                 modifier = Modifier
-                    .size(20.dp)
-                    .background(MaterialTheme.colorScheme.primary, CircleShape),
+                    .size(AppTheme.dimens.iconSizeMedium)
+                    .background(AppTheme.colors.primary, CircleShape),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = Icons.Outlined.ArrowForwardIos,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.background,
-                    modifier = Modifier.size(10.dp)
+                    tint = AppTheme.colors.background,
+                    modifier = Modifier.size(AppTheme.dimens.iconSizeSmall)
                 )
             }
         }
     }
 
     if (spaced) {
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(AppTheme.dimens.spacingRegular))
     }
 }

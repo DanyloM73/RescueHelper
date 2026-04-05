@@ -21,7 +21,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,10 +32,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import com.danylom73.rescuehelper.R
 import com.danylom73.rescuehelper.mvi.nearby.NearbyState
 import com.danylom73.rescuehelper.presentation.screen.config.NearbyScreenUiConfig
+import com.danylom73.rescuehelper.presentation.ui.theme.AppTheme
 
 @Composable
 fun NearbyComposable(
@@ -65,7 +64,7 @@ fun NearbyComposable(
         Column(
             modifier = modifier
                 .fillMaxSize()
-                .padding(24.dp)
+                .padding(AppTheme.dimens.spacingMedium)
         ) {
             Text(
                 text =
@@ -73,13 +72,13 @@ fun NearbyComposable(
                         stringResource(R.string.nearby_title_connected)
                     else
                         stringResource(R.string.nearby_title_default),
-                style = MaterialTheme.typography.titleLarge.copy(
-                    color = MaterialTheme.colorScheme.primary
+                style = AppTheme.typography.titleLarge.copy(
+                    color = AppTheme.colors.primary
                 ),
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp, bottom = 32.dp)
+                    .padding(top = AppTheme.dimens.spacingSmall, bottom = AppTheme.dimens.spacingLarge)
             )
 
             Box(
@@ -91,16 +90,16 @@ fun NearbyComposable(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    shape = RoundedCornerShape(8.dp),
+                        .padding(horizontal = AppTheme.dimens.spacingRegular),
+                    shape = RoundedCornerShape(AppTheme.dimens.radiusSmall),
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.primary
+                        containerColor = AppTheme.colors.primary
                     )
                 ) {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp),
+                            .padding(AppTheme.dimens.spacingRegular),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         when {
@@ -108,14 +107,14 @@ fun NearbyComposable(
                                 Icon(
                                     imageVector = Icons.Filled.Wifi,
                                     contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.background,
-                                    modifier = Modifier.size(64.dp)
+                                    tint = AppTheme.colors.background,
+                                    modifier = Modifier.size(AppTheme.dimens.iconSizeExtraHuge)
                                 )
                             }
 
                             state.isDiscovering || state.isAdvertising -> {
                                 CyclingIcon(
-                                    modifier = Modifier.size(64.dp),
+                                    modifier = Modifier.size(AppTheme.dimens.iconSizeExtraHuge),
                                     icons = listOf(
                                         Icons.Filled.Wifi1Bar,
                                         Icons.Filled.Wifi2Bar,
@@ -128,13 +127,13 @@ fun NearbyComposable(
                                 Icon(
                                     imageVector = Icons.Filled.WifiOff,
                                     contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.background,
-                                    modifier = Modifier.size(64.dp)
+                                    tint = AppTheme.colors.background,
+                                    modifier = Modifier.size(AppTheme.dimens.iconSizeExtraHuge)
                                 )
                             }
                         }
 
-                        Spacer(Modifier.height(16.dp))
+                        Spacer(Modifier.height(AppTheme.dimens.spacingRegular))
 
                         if (
                             state.isDiscovering &&
@@ -143,13 +142,13 @@ fun NearbyComposable(
                         ) {
                             Text(
                                 text = stringResource(R.string.nearby_available_devices_text),
-                                style = MaterialTheme.typography.bodyMedium.copy(
+                                style = AppTheme.typography.bodyMedium.copy(
                                     fontWeight = FontWeight.ExtraBold,
-                                    color = MaterialTheme.colorScheme.background
+                                    color = AppTheme.colors.background
                                 ),
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(start = 8.dp, bottom = 8.dp),
+                                    .padding(start = AppTheme.dimens.spacingSmall, bottom = AppTheme.dimens.spacingSmall),
                                 textAlign = TextAlign.Start
                             )
 
@@ -169,8 +168,8 @@ fun NearbyComposable(
                                     else ->
                                         stringResource(R.string.nearby_no_connect_text)
                                 },
-                                style = MaterialTheme.typography.bodyLarge.copy(
-                                    color = MaterialTheme.colorScheme.background
+                                style = AppTheme.typography.bodyLarge.copy(
+                                    color = AppTheme.colors.background
                                 ),
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier.fillMaxWidth()
@@ -195,8 +194,8 @@ fun NearbyComposable(
                             if (!enabledFlashlight)
                                 stringResource(R.string.nearby_turn_on_flashlight)
                             else stringResource(R.string.nearby_turn_off_flashlight),
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            color = MaterialTheme.colorScheme.background
+                        style = AppTheme.typography.bodyMedium.copy(
+                            color = AppTheme.colors.background
                         )
                     )
                 }
@@ -223,7 +222,7 @@ fun NearbyComposable(
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 12.dp, bottom = 24.dp)
+                        .padding(top = AppTheme.dimens.spacingSmallerRegular, bottom = AppTheme.dimens.spacingMedium)
                 ) {
                     Text(
                         text = when {
@@ -235,8 +234,8 @@ fun NearbyComposable(
 
                             else -> stringResource(R.string.nearby_start_button_text)
                         },
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            color = MaterialTheme.colorScheme.background
+                        style = AppTheme.typography.bodyMedium.copy(
+                            color = AppTheme.colors.background
                         )
                     )
                 }

@@ -13,7 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.unit.dp
+import com.danylom73.rescuehelper.presentation.ui.theme.AppTheme
 import com.danylom73.rescuehelper.presentation.ui.theme.orange
 
 @Composable
@@ -23,7 +23,9 @@ fun RadarBackground(
     wavesCount: Int = 3,
     durationMillis: Int = 4000
 ) {
-    val infiniteTransition = rememberInfiniteTransition(label = "radar")
+    val circleThickness = AppTheme.dimens.thicknessRegular
+
+    val infiniteTransition = rememberInfiniteTransition()
 
     val progress by infiniteTransition.animateFloat(
         initialValue = 0f,
@@ -34,8 +36,7 @@ fun RadarBackground(
                 easing = LinearEasing
             ),
             repeatMode = RepeatMode.Restart
-        ),
-        label = "progress"
+        )
     )
 
     Canvas(modifier = modifier.fillMaxSize()) {
@@ -52,7 +53,7 @@ fun RadarBackground(
                 color = waveColor.copy(alpha = alpha),
                 radius = radius,
                 center = center,
-                style = Stroke(width = 4.dp.toPx())
+                style = Stroke(width = circleThickness.toPx())
             )
         }
     }
