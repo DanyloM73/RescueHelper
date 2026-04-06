@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -26,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import com.danylom73.rescuehelper.R
 import com.danylom73.rescuehelper.domain.requirement.Requirement
 import com.danylom73.rescuehelper.mvi.requirement.RequirementState
+import com.danylom73.rescuehelper.presentation.components.base.BaseButton
 import com.danylom73.rescuehelper.presentation.components.base.BaseTopBar
 import com.danylom73.rescuehelper.presentation.ui.theme.AppTheme
 
@@ -97,25 +96,14 @@ fun RequirementComposable(
                     }
                 }
 
-                Button(
-                    onClick = { onContinueClick() },
+                BaseButton(
                     modifier = Modifier.fillMaxWidth(),
-                    enabled = state.requirements.values.all { list ->
+                    buttonText = stringResource(R.string.requirement_continue_button_text),
+                    isEnabled = state.requirements.values.all { list ->
                         list.all { it.isGranted || it.type.isOptional }
                     },
-                    colors = ButtonDefaults.buttonColors().copy(
-                        disabledContainerColor = AppTheme.colors.primary.copy(
-                            alpha = 0.5f
-                        )
-                    )
-                ) {
-                    Text(
-                        text = stringResource(R.string.requirement_continue_button_text),
-                        style = AppTheme.typography.bodyMedium.copy(
-                            color = AppTheme.colors.background
-                        )
-                    )
-                }
+                    onClick = { onContinueClick() }
+                )
             }
         }
     }

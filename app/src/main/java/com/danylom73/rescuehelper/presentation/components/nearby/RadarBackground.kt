@@ -13,17 +13,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.unit.Dp
 import com.danylom73.rescuehelper.presentation.ui.theme.AppTheme
 
 @Composable
 fun RadarBackground(
     modifier: Modifier = Modifier,
-    waveColor: Color = AppTheme.extendedColors.orangeBackground,
+    waveColor: Color = AppTheme.extendedColors.orangeBackground.copy(alpha = 0.7f),
     wavesCount: Int = 3,
+    circleThickness: Dp = AppTheme.dimens.thicknessSmall,
     durationMillis: Int = 4000
 ) {
-    val circleThickness = AppTheme.dimens.thicknessRegular
-
     val infiniteTransition = rememberInfiniteTransition()
 
     val progress by infiniteTransition.animateFloat(

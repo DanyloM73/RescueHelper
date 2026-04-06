@@ -17,7 +17,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.danylom73.rescuehelper.presentation.ui.theme.AppTheme
 import kotlinx.coroutines.delay
 
 @Composable
@@ -49,7 +48,6 @@ fun CyclingIcon(
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                tint = AppTheme.colors.background,
                 modifier = Modifier.fillMaxSize()
             )
         }

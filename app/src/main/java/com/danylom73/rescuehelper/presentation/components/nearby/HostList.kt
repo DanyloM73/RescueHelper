@@ -38,16 +38,14 @@ fun HostList(
 
             Text(
                 text = "${host.name} (${host.endpointId})",
-                style = AppTheme.typography.bodyMedium.copy(
-                    color = AppTheme.colors.background
-                ),
+                style = AppTheme.typography.bodyMedium,
                 modifier = Modifier
                     .fillMaxWidth()
                     .then(
                         if (showBorder) {
                             Modifier.border(
                                 width = AppTheme.dimens.thicknessRegular,
-                                color = AppTheme.colors.background,
+                                color = AppTheme.colors.primary,
                                 shape = RoundedCornerShape(AppTheme.dimens.radiusSmall)
                             )
                         } else Modifier
@@ -68,8 +66,7 @@ fun HostList(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = AppTheme.dimens.spacingSmall),
-                    thickness = AppTheme.dimens.thicknessExtraSmall,
-                    color = AppTheme.colors.background
+                    thickness = AppTheme.dimens.thicknessExtraSmall
                 )
 
                 Spacer(modifier = Modifier.height(AppTheme.dimens.spacingSmall))
