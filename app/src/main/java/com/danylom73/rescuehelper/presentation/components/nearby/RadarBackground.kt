@@ -14,12 +14,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import com.danylom73.rescuehelper.presentation.ui.theme.AppTheme
-import com.danylom73.rescuehelper.presentation.ui.theme.orange
 
 @Composable
 fun RadarBackground(
     modifier: Modifier = Modifier,
-    waveColor: Color = orange,
+    waveColor: Color = AppTheme.extendedColors.orangeBackground,
     wavesCount: Int = 3,
     durationMillis: Int = 4000
 ) {

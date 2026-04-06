@@ -31,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -65,13 +66,10 @@ fun NearbyComposable(
                     stringResource(R.string.nearby_title_default)
                 }
             )
-        }
+        },
+        containerColor = Color.Transparent
     ) { innerPadding ->
-        Box(
-            Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-        ) {
+        Box(Modifier.fillMaxSize()) {
             AnimatedVisibility(
                 visible = (state.isAdvertising || state.isDiscovering) && state.connectedEndpointId == null,
                 enter = fadeIn(),
@@ -81,8 +79,9 @@ fun NearbyComposable(
             }
 
             Column(
-                modifier = modifier
+                modifier = Modifier
                     .fillMaxSize()
+                    .padding(innerPadding)
                     .padding(AppTheme.dimens.spacingMedium)
             ) {
                 Box(

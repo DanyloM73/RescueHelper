@@ -8,17 +8,29 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 
 private val DarkColorScheme = darkColorScheme(
-    primary = lightYellow,
-    secondary = darkGreen,
-    background = darkBlue,
-    tertiary = orange
+    primary = WhitePrimary,
+    onPrimary = PurplePrimary,
+    secondary = PurpleLight,
+    onSecondary = PurplePrimary,
+    background = PurplePrimary,
+    onBackground = WhitePrimary,
+    surface = WhiteBackground,
+    onSurface = WhitePrimary,
+    error = RedError,
+    onError = WhitePrimary
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = darkGreen,
-    secondary = darkBlue,
-    background = lightYellow,
-    tertiary = orange
+    primary = WhitePrimary,
+    onPrimary = PurplePrimary,
+    secondary = PurpleLight,
+    onSecondary = PurplePrimary,
+    background = PurplePrimary,
+    onBackground = WhitePrimary,
+    surface = WhiteBackground,
+    onSurface = WhitePrimary,
+    error = RedError,
+    onError = WhitePrimary
 )
 
 @Composable
@@ -32,8 +44,12 @@ fun RescueHelperTheme(
     }
 
     val dimens = Dimens()
+    val extendedColors = ExtendedColors()
 
-    CompositionLocalProvider(LocalDimens provides dimens) {
+    CompositionLocalProvider(
+        LocalDimens provides dimens,
+        LocalExtendedColors provides extendedColors
+    ) {
         MaterialTheme(
             colorScheme = colorScheme,
             typography = Typography,
@@ -50,6 +66,10 @@ object AppTheme {
     val colors
         @Composable
         get() = MaterialTheme.colorScheme
+
+    val extendedColors: ExtendedColors
+        @Composable
+        get() = LocalExtendedColors.current
 
     val typography
         @Composable

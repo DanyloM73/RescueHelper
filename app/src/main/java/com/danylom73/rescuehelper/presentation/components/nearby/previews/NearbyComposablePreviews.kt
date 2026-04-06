@@ -1,16 +1,19 @@
 package com.danylom73.rescuehelper.presentation.components.nearby.previews
 
 import android.content.res.Configuration
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.danylom73.rescuehelper.domain.nearby.NearbyHost
 import com.danylom73.rescuehelper.mvi.nearby.NearbyState
 import com.danylom73.rescuehelper.presentation.components.nearby.NearbyComposable
 import com.danylom73.rescuehelper.presentation.screen.config.NearbyScreenUiConfig
+import com.danylom73.rescuehelper.presentation.ui.theme.AppTheme
 import com.danylom73.rescuehelper.presentation.ui.theme.RescueHelperTheme
 
 @Preview(
@@ -26,8 +29,18 @@ import com.danylom73.rescuehelper.presentation.ui.theme.RescueHelperTheme
 private fun ResponderNoConnectPreview() {
     RescueHelperTheme {
         Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    brush = Brush.linearGradient(
+                        colorStops = arrayOf(
+                            0.5f to AppTheme.colors.background,
+                            0.9f to AppTheme.extendedColors.purpleBackground,
+                            1f to AppTheme.extendedColors.orangeBackground
+                        )
+                    )
+                ),
+            color = Color.Transparent
         ) {
             NearbyComposable(
                 config = object : NearbyScreenUiConfig {
@@ -53,8 +66,18 @@ private fun ResponderNoConnectPreview() {
 private fun ResponderConnectedPreview() {
     RescueHelperTheme {
         Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    brush = Brush.linearGradient(
+                        colorStops = arrayOf(
+                            0.5f to AppTheme.colors.background,
+                            0.9f to AppTheme.extendedColors.purpleBackground,
+                            1f to AppTheme.extendedColors.orangeBackground
+                        )
+                    )
+                ),
+            color = Color.Transparent
         ) {
             NearbyComposable(
                 config = object : NearbyScreenUiConfig {
@@ -82,8 +105,18 @@ private fun ResponderConnectedPreview() {
 private fun ResponderSearchHostAvailablePreview() {
     RescueHelperTheme {
         Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    brush = Brush.linearGradient(
+                        colorStops = arrayOf(
+                            0.5f to AppTheme.colors.background,
+                            0.9f to AppTheme.extendedColors.purpleBackground,
+                            1f to AppTheme.extendedColors.orangeBackground
+                        )
+                    )
+                ),
+            color = Color.Transparent
         ) {
             NearbyComposable(
                 config = object : NearbyScreenUiConfig {
@@ -116,8 +149,18 @@ private fun ResponderSearchHostAvailablePreview() {
 private fun ResponderSearchHostUnavailablePreview() {
     RescueHelperTheme {
         Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    brush = Brush.linearGradient(
+                        colorStops = arrayOf(
+                            0.5f to AppTheme.colors.background,
+                            0.9f to AppTheme.extendedColors.purpleBackground,
+                            1f to AppTheme.extendedColors.orangeBackground
+                        )
+                    )
+                ),
+            color = Color.Transparent
         ) {
             NearbyComposable(
                 config = object : NearbyScreenUiConfig {
@@ -145,8 +188,18 @@ private fun ResponderSearchHostUnavailablePreview() {
 fun UserNoConnectPreview() {
     RescueHelperTheme {
         Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    brush = Brush.linearGradient(
+                        colorStops = arrayOf(
+                            0.5f to AppTheme.colors.background,
+                            0.9f to AppTheme.extendedColors.purpleBackground,
+                            1f to AppTheme.extendedColors.orangeBackground
+                        )
+                    )
+                ),
+            color = Color.Transparent
         ) {
             NearbyComposable(
                 config = object : NearbyScreenUiConfig {
@@ -172,8 +225,18 @@ fun UserNoConnectPreview() {
 fun UserConnectedPreview() {
     RescueHelperTheme {
         Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    brush = Brush.linearGradient(
+                        colorStops = arrayOf(
+                            0.5f to AppTheme.colors.background,
+                            0.9f to AppTheme.extendedColors.purpleBackground,
+                            1f to AppTheme.extendedColors.orangeBackground
+                        )
+                    )
+                ),
+            color = Color.Transparent
         ) {
             NearbyComposable(
                 config = object : NearbyScreenUiConfig {
@@ -201,8 +264,18 @@ fun UserConnectedPreview() {
 fun UserHostEnabledPreview() {
     RescueHelperTheme {
         Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    brush = Brush.linearGradient(
+                        colorStops = arrayOf(
+                            0.5f to AppTheme.colors.background,
+                            0.9f to AppTheme.extendedColors.purpleBackground,
+                            1f to AppTheme.extendedColors.orangeBackground
+                        )
+                    )
+                ),
+            color = Color.Transparent
         ) {
             NearbyComposable(
                 config = object : NearbyScreenUiConfig {

@@ -21,9 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.danylom73.rescuehelper.domain.requirement.Requirement
 import com.danylom73.rescuehelper.presentation.ui.theme.AppTheme
-import com.danylom73.rescuehelper.presentation.ui.theme.green
-import com.danylom73.rescuehelper.presentation.ui.theme.red
-import com.danylom73.rescuehelper.presentation.ui.theme.yellow
 
 @Composable
 fun RequirementListItem(
@@ -59,9 +56,9 @@ fun RequirementListItem(
                 .size(AppTheme.dimens.iconSizeRegular)
                 .background(
                     color = when {
-                        requirement.isGranted -> green
-                        !requirement.isGranted && requirement.type.isOptional -> yellow
-                        else -> red
+                        requirement.isGranted -> AppTheme.extendedColors.success
+                        !requirement.isGranted && requirement.type.isOptional -> AppTheme.extendedColors.warning
+                        else -> AppTheme.colors.error
                     },
                     shape = CircleShape
                 ),

@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.danylom73.rescuehelper.R
@@ -37,12 +38,11 @@ fun RequirementComposable(
     onContinueClick: () -> Unit
 ) {
     Scaffold(
-        topBar = {
-            BaseTopBar(stringResource(R.string.requirement_title))
-        }
+        topBar = { BaseTopBar(stringResource(R.string.requirement_title)) },
+        containerColor = Color.Transparent
     ) { innerPadding ->
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(AppTheme.dimens.spacingMedium)
