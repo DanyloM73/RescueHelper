@@ -74,6 +74,17 @@ class NearbyViewModel @Inject constructor(
             is NearbyIntent.SendCommand ->
                 repository.sendCommand(intent.command)
 
+            is NearbyIntent.SendCurrentFlashlightState -> {
+                if (roleProvider.role == AppRole.USER) {
+                    repository.sendCommand(
+                        if (intent.enabled) {
+                            NearbyCommand.FLASHLIGHT_STATE_ON
+                        } else {
+                            NearbyCommand.FLASHLIGHT_STATE_OFF
+                        }
+                    )
+                }
+            }
 
             is NearbyIntent.ConnectToHost -> {
                 sendSideEffect(NearbySideEffect.ShowToast("Connecting to host"))
@@ -128,6 +139,10 @@ class NearbyViewModel @Inject constructor(
                                 sendSideEffect(NearbySideEffect.SetFlashlight(true))
                             NearbyCommand.TURN_OFF_FLASHLIGHT ->
                                 sendSideEffect(NearbySideEffect.SetFlashlight(false))
+                            NearbyCommand.FLASHLIGHT_STATE_ON ->
+                                reduce { copy(remoteFlashlightEnabled = true) }
+                            NearbyCommand.FLASHLIGHT_STATE_OFF ->
+                                reduce { copy(remoteFlashlightEnabled = false) }
                         }
                     }
 
