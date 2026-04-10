@@ -20,9 +20,9 @@ import com.danylom73.rescuehelper.presentation.ui.theme.AppTheme
 fun RadarBackground(
     modifier: Modifier = Modifier,
     waveColor: Color = AppTheme.extendedColors.orangeBackground.copy(alpha = 0.7f),
-    wavesCount: Int = 3,
-    circleThickness: Dp = AppTheme.dimens.thicknessSmall,
-    durationMillis: Int = 4000
+    wavesCount: Int = 2,
+    circleThickness: Dp = AppTheme.dimens.thicknessExtraHuge,
+    durationMillis: Int = 5000
 ) {
     val infiniteTransition = rememberInfiniteTransition()
 

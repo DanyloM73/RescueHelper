@@ -105,3 +105,15 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 }
+
+tasks.register("assembleAllRescueHelperApks") {
+    group = "build"
+    description = "Build all selected APK variants"
+
+    dependsOn(
+        "assembleUserDebug",
+        "assembleResponderDebug",
+        "assembleUserRelease",
+        "assembleResponderRelease"
+    )
+}

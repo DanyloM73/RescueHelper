@@ -15,6 +15,7 @@ data class Dimens(
     val thicknessExtraSmall: Dp = 1.dp,
     val thicknessSmall: Dp = 2.dp,
     val thicknessRegular: Dp = 4.dp,
+    val thicknessExtraHuge: Dp = 12.dp,
 
     val iconSizeSmall: Dp = 10.dp,
     val iconSizeRegular: Dp = 16.dp,
