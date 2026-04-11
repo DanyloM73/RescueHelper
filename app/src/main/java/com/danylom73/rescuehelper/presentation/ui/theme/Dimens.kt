@@ -10,7 +10,8 @@ data class Dimens(
     val spacingSmallerRegular: Dp = 12.dp,
     val spacingRegular: Dp = 16.dp,
     val spacingMedium: Dp = 24.dp,
-    val spacingLarge: Dp = 32.dp,
+    val spacingMediumBigger: Dp = 32.dp,
+    val spacingLarge: Dp = 48.dp,
 
     val thicknessExtraSmall: Dp = 1.dp,
     val thicknessSmall: Dp = 2.dp,

@@ -261,6 +261,46 @@ fun UserConnectedPreview() {
     uiMode = Configuration.UI_MODE_NIGHT_YES
 )
 @Composable
+fun UserConnectedFlashlightEnabledPreview() {
+    RescueHelperTheme {
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    brush = Brush.linearGradient(
+                        colorStops = arrayOf(
+                            0.5f to AppTheme.colors.background,
+                            0.9f to AppTheme.extendedColors.purpleBackground,
+                            1f to AppTheme.extendedColors.orangeBackground
+                        )
+                    )
+                ),
+            color = Color.Transparent
+        ) {
+            NearbyComposable(
+                config = object : NearbyScreenUiConfig {
+                    override val showHosts: Boolean = false
+                    override val canDisconnect: Boolean = false
+                },
+                state = NearbyState(
+                    connectedEndpointId = "4321"
+                ),
+                isFlashLightEnabled = true
+            )
+        }
+    }
+}
+
+@Preview(
+    name = "Light",
+    showBackground = true
+)
+@Preview(
+    name = "Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
 fun UserHostEnabledPreview() {
     RescueHelperTheme {
         Surface(

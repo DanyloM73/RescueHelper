@@ -66,7 +66,8 @@ fun HostList(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = AppTheme.dimens.spacingSmall),
-                    thickness = AppTheme.dimens.thicknessExtraSmall
+                    thickness = AppTheme.dimens.thicknessExtraSmall,
+                    color = AppTheme.colors.primary
                 )
 
                 Spacer(modifier = Modifier.height(AppTheme.dimens.spacingSmall))

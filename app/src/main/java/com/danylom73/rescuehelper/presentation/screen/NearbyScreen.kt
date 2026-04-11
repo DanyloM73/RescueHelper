@@ -69,6 +69,7 @@ fun NearbyScreen(
         modifier = modifier,
         config = config,
         state = state,
+        isFlashLightEnabled = isFlashlightEnabled,
         onStartConnecting = {
             viewModel.process(NearbyIntent.StartConnecting)
         },

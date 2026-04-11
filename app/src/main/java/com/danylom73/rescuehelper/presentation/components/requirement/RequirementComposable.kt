@@ -91,7 +91,7 @@ fun RequirementComposable(
                         }
 
                         item {
-                            Spacer(Modifier.height(AppTheme.dimens.spacingLarge))
+                            Spacer(Modifier.height(AppTheme.dimens.spacingMediumBigger))
                         }
                     }
                 }

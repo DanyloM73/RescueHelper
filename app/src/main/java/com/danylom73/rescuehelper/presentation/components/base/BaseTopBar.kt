@@ -6,6 +6,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import com.danylom73.rescuehelper.presentation.ui.theme.AppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -13,7 +14,7 @@ import com.danylom73.rescuehelper.presentation.ui.theme.AppTheme
 fun BaseTopBar(
     title: String,
     colors: TopAppBarColors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-        containerColor = AppTheme.colors.background
+        containerColor = Color.Transparent
     )
 ) {
     CenterAlignedTopAppBar(

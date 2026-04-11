@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -48,6 +49,7 @@ fun NearbyComposable(
     modifier: Modifier = Modifier,
     config: NearbyScreenUiConfig,
     state: NearbyState,
+    isFlashLightEnabled: Boolean = false,
     onStartConnecting: () -> Unit = {},
     onStopConnecting: () -> Unit = {},
     onConnect: (String) -> Unit = {},
@@ -72,11 +74,25 @@ fun NearbyComposable(
     ) { innerPadding ->
         Box(Modifier.fillMaxSize()) {
             AnimatedVisibility(
-                visible = (state.isAdvertising || state.isDiscovering) && state.connectedEndpointId == null,
+                visible = (state.isAdvertising || state.isDiscovering) &&
+                        state.connectedEndpointId == null,
                 enter = fadeIn(),
                 exit = fadeOut()
             ) {
-                RadarBackground()
+                SideGlowOverlay(
+                    pulseEnabled = true,
+                    color = AppTheme.extendedColors.orangeBackground
+                )
+            }
+
+            AnimatedVisibility(
+                visible = isFlashLightEnabled &&
+                        state.connectedEndpointId != null &&
+                        !config.canDisconnect,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                SideGlowOverlay()
             }
 
             Column(
@@ -189,17 +205,22 @@ fun NearbyComposable(
                 AnimatedVisibility(
                     state.connectedEndpointId != null && config.canDisconnect
                 ) {
-                    BaseButton(
+                    Column(
                         modifier = Modifier.fillMaxWidth(),
-                        buttonText =
-                            if (!enabledFlashlight) stringResource(R.string.nearby_turn_on_flashlight)
-                            else stringResource(R.string.nearby_turn_off_flashlight),
-                        isActivated = enabledFlashlight,
-                        onClick = {
-                            enabledFlashlight = !enabledFlashlight
-                            onSetFlashlight(enabledFlashlight)
-                        }
-                    )
+                        verticalArrangement = Arrangement.spacedBy(AppTheme.dimens.spacingSmallerRegular)
+                    ) {
+                        BaseButton(
+                            modifier = Modifier.fillMaxWidth(),
+                            buttonText =
+                                if (!enabledFlashlight) stringResource(R.string.nearby_turn_on_flashlight)
+                                else stringResource(R.string.nearby_turn_off_flashlight),
+                            isActivated = enabledFlashlight,
+                            onClick = {
+                                enabledFlashlight = !enabledFlashlight
+                                onSetFlashlight(enabledFlashlight)
+                            }
+                        )
+                    }
                 }
 
                 AnimatedVisibility(
@@ -208,7 +229,7 @@ fun NearbyComposable(
                     BaseButton(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = AppTheme.dimens.spacingSmallerRegular),
+                            .padding(top = AppTheme.dimens.spacingMediumBigger),
                         buttonText = when {
                             state.isAdvertising || state.isDiscovering ->
                                 stringResource(R.string.nearby_stop_button_text)
