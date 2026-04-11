@@ -56,7 +56,7 @@ fun NearbyComposable(
     onDisconnect: () -> Unit = {},
     onSetFlashlight: (Boolean) -> Unit = {}
 ) {
-    var enabledFlashlight by remember(state.remoteFlashlightEnabled) {
+    var enabledFlashlight by remember {
         mutableStateOf(state.remoteFlashlightEnabled)
     }
 
