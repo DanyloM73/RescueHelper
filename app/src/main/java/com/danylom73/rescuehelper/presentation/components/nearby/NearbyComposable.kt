@@ -60,6 +60,10 @@ fun NearbyComposable(
         mutableStateOf(state.remoteFlashlightEnabled)
     }
 
+    var enabledSoundSignal by remember {
+        mutableStateOf(false)
+    }
+
     Scaffold(
         topBar = {
             BaseTopBar(
@@ -218,6 +222,17 @@ fun NearbyComposable(
                             onClick = {
                                 enabledFlashlight = !enabledFlashlight
                                 onSetFlashlight(enabledFlashlight)
+                            }
+                        )
+
+                        BaseButton(
+                            modifier = Modifier.fillMaxWidth(),
+                            buttonText =
+                                if (!enabledSoundSignal) stringResource(R.string.nearby_turn_on_sound)
+                                else stringResource(R.string.nearby_turn_off_sound),
+                            isActivated = enabledSoundSignal,
+                            onClick = {
+                                enabledSoundSignal = !enabledSoundSignal
                             }
                         )
                     }
