@@ -1,7 +1,9 @@
 package com.danylom73.rescuehelper.di
 
 import android.content.Context
+import com.danylom73.rescuehelper.data.flashlight.FlashlightControllerImpl
 import com.danylom73.rescuehelper.data.nearby.NearbyRepositoryImpl
+import com.danylom73.rescuehelper.domain.flashlight.FlashlightController
 import com.danylom73.rescuehelper.domain.nearby.NearbyRepository
 import dagger.Module
 import dagger.Provides
@@ -19,4 +21,10 @@ object NearbyModule {
     fun provideNearbyRepository(
         @ApplicationContext context: Context
     ): NearbyRepository = NearbyRepositoryImpl(context)
+
+    @Provides
+    @Singleton
+    fun provideFlashlightController(
+        @ApplicationContext context: Context
+    ): FlashlightController = FlashlightControllerImpl(context)
 }

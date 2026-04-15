@@ -4,20 +4,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.danylom73.rescuehelper.core.role.AppRole
 import com.danylom73.rescuehelper.core.role.RoleProvider
+import com.danylom73.rescuehelper.domain.flashlight.FlashlightController
 import com.danylom73.rescuehelper.domain.nearby.NearbyCommand
 import com.danylom73.rescuehelper.domain.nearby.NearbyEvent
 import com.danylom73.rescuehelper.domain.nearby.NearbyRepository
 import com.danylom73.rescuehelper.presentation.screen.config.NearbyScreenUiConfig
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,6 +23,7 @@ import javax.inject.Inject
 class NearbyViewModel @Inject constructor(
     private val repository: NearbyRepository,
     private val roleProvider: RoleProvider,
+    private val flashlightController: FlashlightController,
     nearbyScreenUiConfig: NearbyScreenUiConfig
 ) : ViewModel() {
 
@@ -36,7 +35,7 @@ class NearbyViewModel @Inject constructor(
 
     val uiConfig = nearbyScreenUiConfig
 
-    private var flashlightBlinkJob: Job? = null
+    val isFlashlightEnabled: StateFlow<Boolean> = flashlightController.isFlashlightEnabled
 
     init {
         observeRepository()
@@ -76,13 +75,7 @@ class NearbyViewModel @Inject constructor(
                 }
             }
 
-            is NearbyIntent.SendCommand -> {
-                when (intent.command) {
-                    NearbyCommand.TURN_ON_FLASHLIGHT -> setFlashlightBlinking(true)
-                    NearbyCommand.TURN_OFF_FLASHLIGHT -> setFlashlightBlinking(false)
-                    else -> repository.sendCommand(intent.command)
-                }
-            }
+            is NearbyIntent.SendCommand -> repository.sendCommand(intent.command)
 
             is NearbyIntent.SendCurrentFlashlightState -> {
                 if (roleProvider.role == AppRole.USER) {
@@ -106,34 +99,6 @@ class NearbyViewModel @Inject constructor(
                 repository.disconnect()
             }
         }
-    }
-
-    private fun setFlashlightBlinking(enabled: Boolean) {
-        if (enabled) {
-            if (flashlightBlinkJob?.isActive == true) return
-
-            flashlightBlinkJob = viewModelScope.launch {
-                while (isActive) {
-                    repository.sendCommand(NearbyCommand.TURN_ON_FLASHLIGHT)
-                    delay(3_000)
-
-                    if (!isActive) break
-
-                    repository.sendCommand(NearbyCommand.TURN_OFF_FLASHLIGHT)
-                    delay(1_000)
-                }
-            }
-        } else {
-            flashlightBlinkJob?.cancel()
-            flashlightBlinkJob = null
-            repository.sendCommand(NearbyCommand.TURN_OFF_FLASHLIGHT)
-        }
-    }
-
-    override fun onCleared() {
-        flashlightBlinkJob?.cancel()
-        flashlightBlinkJob = null
-        super.onCleared()
     }
 
     private fun observeRepository() {
@@ -173,14 +138,17 @@ class NearbyViewModel @Inject constructor(
 
                     is NearbyEvent.CommandReceived -> {
                         when (event.command) {
-                            NearbyCommand.TURN_ON_FLASHLIGHT ->
-                                sendSideEffect(NearbySideEffect.SetFlashlight(true))
-                            NearbyCommand.TURN_OFF_FLASHLIGHT ->
-                                sendSideEffect(NearbySideEffect.SetFlashlight(false))
+                            NearbyCommand.START_FLASHLIGHT_BLINKING -> flashlightController.startBlinking()
+                            NearbyCommand.STOP_FLASHLIGHT_BLINKING -> {
+                                flashlightController.stopBlinking()
+                                flashlightController.setEnabled(false)
+                            }
                             NearbyCommand.FLASHLIGHT_STATE_ON ->
                                 reduce { copy(remoteFlashlightEnabled = true) }
                             NearbyCommand.FLASHLIGHT_STATE_OFF ->
                                 reduce { copy(remoteFlashlightEnabled = false) }
+                            NearbyCommand.START_ALERT -> {}
+                            NearbyCommand.STOP_ALERT -> {}
                         }
                     }
 

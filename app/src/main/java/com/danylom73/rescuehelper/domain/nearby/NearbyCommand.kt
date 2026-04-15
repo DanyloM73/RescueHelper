@@ -1,8 +1,11 @@
 package com.danylom73.rescuehelper.domain.nearby
 
 enum class NearbyCommand {
-    TURN_ON_FLASHLIGHT,
-    TURN_OFF_FLASHLIGHT,
+    START_FLASHLIGHT_BLINKING,
+    STOP_FLASHLIGHT_BLINKING,
+
+    START_ALERT,
+    STOP_ALERT,
 
     FLASHLIGHT_STATE_ON,
     FLASHLIGHT_STATE_OFF;
