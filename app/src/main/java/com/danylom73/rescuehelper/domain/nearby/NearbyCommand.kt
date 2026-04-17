@@ -8,7 +8,10 @@ enum class NearbyCommand {
     STOP_ALERT,
 
     FLASHLIGHT_STATE_ON,
-    FLASHLIGHT_STATE_OFF;
+    FLASHLIGHT_STATE_OFF,
+
+    ALERT_STATE_ON,
+    ALERT_STATE_OFF;
 
     companion object {
         fun fromName(name: String?): NearbyCommand? {

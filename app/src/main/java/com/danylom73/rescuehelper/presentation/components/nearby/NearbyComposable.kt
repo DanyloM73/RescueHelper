@@ -50,18 +50,20 @@ fun NearbyComposable(
     config: NearbyScreenUiConfig,
     state: NearbyState,
     isFlashLightEnabled: Boolean = false,
+    isAlertEnabled: Boolean = false,
     onStartConnecting: () -> Unit = {},
     onStopConnecting: () -> Unit = {},
     onConnect: (String) -> Unit = {},
     onDisconnect: () -> Unit = {},
-    onSetFlashlight: (Boolean) -> Unit = {}
+    onSetFlashlight: (Boolean) -> Unit = {},
+    onSetAlert: (Boolean) -> Unit = {}
 ) {
-    var enabledFlashlight by remember {
+    var enabledFlashlight by remember(state.remoteFlashlightEnabled) {
         mutableStateOf(state.remoteFlashlightEnabled)
     }
 
-    var enabledSoundSignal by remember {
-        mutableStateOf(false)
+    var enabledSoundSignal by remember(state.remoteAlertEnabled) {
+        mutableStateOf(state.remoteAlertEnabled)
     }
 
     Scaffold(
@@ -84,8 +86,8 @@ fun NearbyComposable(
                 exit = fadeOut()
             ) {
                 SideGlowOverlay(
-                    pulseEnabled = true,
-                    color = AppTheme.extendedColors.orangeBackground
+                    colorTransitionEnabled = true,
+                    startColor = AppTheme.extendedColors.orangeBackground
                 )
             }
 
@@ -97,6 +99,36 @@ fun NearbyComposable(
                 exit = fadeOut()
             ) {
                 SideGlowOverlay()
+            }
+
+            AnimatedVisibility(
+                visible = isAlertEnabled &&
+                        state.connectedEndpointId != null &&
+                        !config.canDisconnect,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                SideGlowOverlay(
+                    colorTransitionEnabled = true,
+                    startColor = AppTheme.extendedColors.purpleBackground,
+                    durationMillis = 2000
+                )
+            }
+
+            AnimatedVisibility(
+                visible = isFlashLightEnabled &&
+                        isAlertEnabled &&
+                        state.connectedEndpointId != null &&
+                        !config.canDisconnect,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                SideGlowOverlay(
+                    colorTransitionEnabled = true,
+                    startColor = AppTheme.colors.primary,
+                    endColor = AppTheme.extendedColors.purpleBackground,
+                    durationMillis = 2000
+                )
             }
 
             Column(
@@ -233,6 +265,7 @@ fun NearbyComposable(
                             isActivated = enabledSoundSignal,
                             onClick = {
                                 enabledSoundSignal = !enabledSoundSignal
+                                onSetAlert(enabledSoundSignal)
                             }
                         )
                     }

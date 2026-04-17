@@ -21,6 +21,7 @@ fun NearbyScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val isFlashlightEnabled by viewModel.isFlashlightEnabled.collectAsState()
+    val isAlertEnabled by viewModel.isAlertPlaying.collectAsState()
     val context = LocalContext.current
     val config = viewModel.uiConfig
 
@@ -38,28 +39,49 @@ fun NearbyScreen(
         }
     }
 
+    LaunchedEffect(state.connectedEndpointId) {
+        if (state.connectedEndpointId != null) {
+            viewModel.handleIntent(
+                NearbyIntent.SendCurrentFlashlightState(isFlashlightEnabled)
+            )
+
+            viewModel.handleIntent(
+                NearbyIntent.SendCurrentAlertState(isAlertEnabled)
+            )
+        }
+    }
+
     NearbyComposable(
         modifier = modifier,
         config = config,
         state = state,
         isFlashLightEnabled = isFlashlightEnabled,
+        isAlertEnabled = isAlertEnabled,
         onStartConnecting = {
-            viewModel.process(NearbyIntent.StartConnecting)
+            viewModel.handleIntent(NearbyIntent.StartConnecting)
         },
         onStopConnecting = {
-            viewModel.process(NearbyIntent.StopConnecting)
+            viewModel.handleIntent(NearbyIntent.StopConnecting)
         },
         onConnect = {
-            viewModel.process(NearbyIntent.ConnectToHost(it))
+            viewModel.handleIntent(NearbyIntent.ConnectToHost(it))
         },
         onDisconnect = {
-            viewModel.process(NearbyIntent.Disconnect)
+            viewModel.handleIntent(NearbyIntent.Disconnect)
         },
         onSetFlashlight = {
-            viewModel.process(
+            viewModel.handleIntent(
                 NearbyIntent.SendCommand(
                     if (it) NearbyCommand.START_FLASHLIGHT_BLINKING
                     else NearbyCommand.STOP_FLASHLIGHT_BLINKING
+                )
+            )
+        },
+        onSetAlert = {
+            viewModel.handleIntent(
+                NearbyIntent.SendCommand(
+                    if (it) NearbyCommand.START_ALERT
+                    else NearbyCommand.STOP_ALERT
                 )
             )
         }

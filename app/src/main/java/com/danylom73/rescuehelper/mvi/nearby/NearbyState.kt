@@ -8,5 +8,6 @@ data class NearbyState(
     val discoveredHosts: List<NearbyHost> = emptyList(),
     val connectedEndpointId: String? = null,
     val remoteFlashlightEnabled: Boolean = false,
+    val remoteAlertEnabled: Boolean = false,
     val error: String? = null
 )

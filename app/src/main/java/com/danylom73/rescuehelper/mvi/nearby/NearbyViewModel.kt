@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.danylom73.rescuehelper.core.role.AppRole
 import com.danylom73.rescuehelper.core.role.RoleProvider
+import com.danylom73.rescuehelper.domain.alert.AlertController
 import com.danylom73.rescuehelper.domain.flashlight.FlashlightController
 import com.danylom73.rescuehelper.domain.nearby.NearbyCommand
 import com.danylom73.rescuehelper.domain.nearby.NearbyEvent
@@ -24,6 +25,7 @@ class NearbyViewModel @Inject constructor(
     private val repository: NearbyRepository,
     private val roleProvider: RoleProvider,
     private val flashlightController: FlashlightController,
+    private val alertController: AlertController,
     nearbyScreenUiConfig: NearbyScreenUiConfig
 ) : ViewModel() {
 
@@ -36,25 +38,26 @@ class NearbyViewModel @Inject constructor(
     val uiConfig = nearbyScreenUiConfig
 
     val isFlashlightEnabled: StateFlow<Boolean> = flashlightController.isFlashlightEnabled
+    val isAlertPlaying: StateFlow<Boolean> = alertController.isPlayingFlow
 
     init {
         observeRepository()
     }
 
-    fun process(intent: NearbyIntent) {
+    fun handleIntent(intent: NearbyIntent) {
         when (intent) {
             is NearbyIntent.StartConnecting -> {
                 when (roleProvider.role) {
                     AppRole.RESPONDER -> {
-                        sendSideEffect(NearbySideEffect.ShowToast("Discovery started"))
+                        //sendSideEffect(NearbySideEffect.ShowToast("Discovery started"))
                         repository.startDiscovery()
-                        reduce { copy(isDiscovering = true) }
+                        updateState { copy(isDiscovering = true) }
                     }
 
                     AppRole.USER ->  {
-                        sendSideEffect(NearbySideEffect.ShowToast("Advertising started"))
+                        //sendSideEffect(NearbySideEffect.ShowToast("Advertising started"))
                         repository.startAdvertising()
-                        reduce { copy(isAdvertising = true) }
+                        updateState { copy(isAdvertising = true) }
                     }
                 }
             }
@@ -62,15 +65,15 @@ class NearbyViewModel @Inject constructor(
             is NearbyIntent.StopConnecting -> {
                 when (roleProvider.role) {
                     AppRole.RESPONDER -> {
-                        sendSideEffect(NearbySideEffect.ShowToast("Discovery stopped"))
+                        //sendSideEffect(NearbySideEffect.ShowToast("Discovery stopped"))
                         repository.stopDiscovery()
-                        reduce { copy(isDiscovering = false) }
+                        updateState { copy(isDiscovering = false) }
                     }
 
                     AppRole.USER ->  {
-                        sendSideEffect(NearbySideEffect.ShowToast("Advertising stopped"))
+                        //sendSideEffect(NearbySideEffect.ShowToast("Advertising stopped"))
                         repository.stopAdvertising()
-                        reduce { copy(isAdvertising = false) }
+                        updateState { copy(isAdvertising = false) }
                     }
                 }
             }
@@ -89,13 +92,25 @@ class NearbyViewModel @Inject constructor(
                 }
             }
 
+            is NearbyIntent.SendCurrentAlertState -> {
+                if (roleProvider.role == AppRole.USER) {
+                    repository.sendCommand(
+                        if (intent.enabled) {
+                            NearbyCommand.ALERT_STATE_ON
+                        } else {
+                            NearbyCommand.ALERT_STATE_OFF
+                        }
+                    )
+                }
+            }
+
             is NearbyIntent.ConnectToHost -> {
-                sendSideEffect(NearbySideEffect.ShowToast("Connecting to host"))
+                //sendSideEffect(NearbySideEffect.ShowToast("Connecting to host"))
                 repository.connectToHost(intent.endpointId)
             }
 
             is NearbyIntent.Disconnect -> {
-                sendSideEffect(NearbySideEffect.ShowToast("Disconnecting"))
+                //sendSideEffect(NearbySideEffect.ShowToast("Disconnecting"))
                 repository.disconnect()
             }
         }
@@ -106,13 +121,13 @@ class NearbyViewModel @Inject constructor(
             repository.observeEvents().collect { event ->
                 when (event) {
                     is NearbyEvent.HostFound ->
-                        reduce {
+                        updateState {
                             if (discoveredHosts.any { it.endpointId == event.host.endpointId }) this
                             else copy(discoveredHosts = discoveredHosts + event.host)
                         }
 
                     is NearbyEvent.HostLost ->
-                        reduce {
+                        updateState {
                             copy(
                                 discoveredHosts = discoveredHosts.filterNot {
                                     it.endpointId == event.endpointId
@@ -121,7 +136,7 @@ class NearbyViewModel @Inject constructor(
                         }
 
                     is NearbyEvent.Connected ->
-                        reduce {
+                        updateState {
                             copy(
                                 isDiscovering = false,
                                 connectedEndpointId = event.endpointId,
@@ -130,7 +145,7 @@ class NearbyViewModel @Inject constructor(
                         }
 
                     is NearbyEvent.Disconnected ->
-                        reduce {
+                        updateState {
                             copy(
                                 connectedEndpointId = null
                             )
@@ -143,17 +158,24 @@ class NearbyViewModel @Inject constructor(
                                 flashlightController.stopBlinking()
                                 flashlightController.setEnabled(false)
                             }
+
+                            NearbyCommand.START_ALERT -> alertController.startAlert()
+                            NearbyCommand.STOP_ALERT -> alertController.stopAlert()
+
                             NearbyCommand.FLASHLIGHT_STATE_ON ->
-                                reduce { copy(remoteFlashlightEnabled = true) }
+                                updateState { copy(remoteFlashlightEnabled = true) }
                             NearbyCommand.FLASHLIGHT_STATE_OFF ->
-                                reduce { copy(remoteFlashlightEnabled = false) }
-                            NearbyCommand.START_ALERT -> {}
-                            NearbyCommand.STOP_ALERT -> {}
+                                updateState { copy(remoteFlashlightEnabled = false) }
+
+                            NearbyCommand.ALERT_STATE_ON ->
+                                updateState { copy(remoteAlertEnabled = true) }
+                            NearbyCommand.ALERT_STATE_OFF ->
+                                updateState { copy(remoteAlertEnabled = false) }
                         }
                     }
 
                     is NearbyEvent.Error -> {
-                        reduce { copy(error = event.error) }
+                        updateState { copy(error = event.error) }
                         sendSideEffect(NearbySideEffect.ShowToast(event.error))
                     }
                 }
@@ -161,7 +183,7 @@ class NearbyViewModel @Inject constructor(
         }
     }
 
-    private fun reduce(reducer: NearbyState.() -> NearbyState) {
+    private fun updateState(reducer: NearbyState.() -> NearbyState) {
         _state.update { it.reducer() }
     }
 
