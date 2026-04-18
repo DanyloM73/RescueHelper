@@ -14,6 +14,8 @@
     <string name="nearby_turn_off_flashlight">Вимкнути ліхтарик</string>
     <string name="nearby_turn_on_sound">Увімкнути звуковий сигнал</string>
     <string name="nearby_turn_off_sound">Вимкнути звуковий сигнал</string>
+    <string name="nearby_connected_message">Підключено до потерпілого</string>
+    <string name="nearby_disconnected_message">Зʼєднання з потерпілим розірвано</string>
 
     <!-- REQUIREMENT SCREEN -->
     <string name="requirement_title">Надання дозволів</string>

@@ -12,6 +12,7 @@ data class Dimens(
     val spacingMedium: Dp = 24.dp,
     val spacingMediumBigger: Dp = 32.dp,
     val spacingLarge: Dp = 48.dp,
+    val spacingExtraLarge: Dp = 88.dp,
 
     val thicknessExtraSmall: Dp = 1.dp,
     val thicknessSmall: Dp = 2.dp,
@@ -24,6 +25,7 @@ data class Dimens(
     val iconSizeExtraHuge: Dp = 64.dp,
 
     val radiusSmall: Dp = 8.dp,
+    val radiusRegular: Dp = 16.dp,
 )
 
 val LocalDimens = staticCompositionLocalOf { Dimens() }

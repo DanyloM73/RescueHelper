@@ -2,6 +2,7 @@ package com.danylom73.rescuehelper.mvi.nearby
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.danylom73.rescuehelper.R
 import com.danylom73.rescuehelper.core.role.AppRole
 import com.danylom73.rescuehelper.core.role.RoleProvider
 import com.danylom73.rescuehelper.domain.alert.AlertController
@@ -9,6 +10,8 @@ import com.danylom73.rescuehelper.domain.flashlight.FlashlightController
 import com.danylom73.rescuehelper.domain.nearby.NearbyCommand
 import com.danylom73.rescuehelper.domain.nearby.NearbyEvent
 import com.danylom73.rescuehelper.domain.nearby.NearbyRepository
+import com.danylom73.rescuehelper.domain.resource.ResourceManager
+import com.danylom73.rescuehelper.presentation.components.base.BaseSnackbarIcon
 import com.danylom73.rescuehelper.presentation.screen.config.NearbyScreenUiConfig
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -26,6 +29,7 @@ class NearbyViewModel @Inject constructor(
     private val roleProvider: RoleProvider,
     private val flashlightController: FlashlightController,
     private val alertController: AlertController,
+    private val resourceManager: ResourceManager,
     nearbyScreenUiConfig: NearbyScreenUiConfig
 ) : ViewModel() {
 
@@ -129,7 +133,13 @@ class NearbyViewModel @Inject constructor(
                             )
                         }
 
-                    is NearbyEvent.Connected ->
+                    is NearbyEvent.Connected -> {
+                        postSideEffect(
+                            NearbySideEffect.ShowMessage(
+                                resourceManager.getString(R.string.nearby_connected_message),
+                                BaseSnackbarIcon.CONNECTED
+                            )
+                        )
                         updateState {
                             copy(
                                 isDiscovering = false,
@@ -137,13 +147,21 @@ class NearbyViewModel @Inject constructor(
                                 discoveredHosts = emptyList()
                             )
                         }
+                    }
 
-                    is NearbyEvent.Disconnected ->
+                    is NearbyEvent.Disconnected -> {
+                        postSideEffect(
+                            NearbySideEffect.ShowMessage(
+                                resourceManager.getString(R.string.nearby_disconnected_message),
+                                BaseSnackbarIcon.DISCONNECTED
+                            )
+                        )
                         updateState {
                             copy(
                                 connectedEndpointId = null
                             )
                         }
+                    }
 
                     is NearbyEvent.CommandReceived -> {
                         when (event.command) {
@@ -170,7 +188,7 @@ class NearbyViewModel @Inject constructor(
 
                     is NearbyEvent.Error -> {
                         updateState { copy(error = event.error) }
-                        sendSideEffect(NearbySideEffect.ShowToast(event.error))
+                        postSideEffect(NearbySideEffect.ShowMessage(event.error))
                     }
                 }
             }
@@ -181,7 +199,7 @@ class NearbyViewModel @Inject constructor(
         _state.update { it.reducer() }
     }
 
-    private fun sendSideEffect(effect: NearbySideEffect) {
+    private fun postSideEffect(effect: NearbySideEffect) {
         viewModelScope.launch {
             _sideEffect.send(effect)
         }

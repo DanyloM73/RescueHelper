@@ -14,6 +14,8 @@
     <string name="nearby_turn_off_flashlight">Turn off flashlight</string>
     <string name="nearby_turn_on_sound">Turn on sound</string>
     <string name="nearby_turn_off_sound">Turn off sound</string>
+    <string name="nearby_connected_message">Connected to rescuers</string>
+    <string name="nearby_disconnected_message">Connection to rescuers lost</string>
 
     <!-- REQUIREMENT SCREEN -->
     <string name="requirement_title">Granting permissions</string>

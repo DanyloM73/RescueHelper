@@ -1,18 +1,21 @@
 package com.danylom73.rescuehelper.presentation.screen
 
-import android.widget.Toast
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.danylom73.rescuehelper.domain.nearby.NearbyCommand
 import com.danylom73.rescuehelper.mvi.nearby.NearbyIntent
 import com.danylom73.rescuehelper.mvi.nearby.NearbySideEffect
 import com.danylom73.rescuehelper.mvi.nearby.NearbyViewModel
+import com.danylom73.rescuehelper.presentation.components.base.BaseSnackbarVisuals
 import com.danylom73.rescuehelper.presentation.components.nearby.NearbyComposable
+import kotlinx.coroutines.launch
 
 @Composable
 fun NearbyScreen(
@@ -22,18 +25,22 @@ fun NearbyScreen(
     val state by viewModel.state.collectAsState()
     val isFlashlightEnabled by viewModel.isFlashlightEnabled.collectAsState()
     val isAlertEnabled by viewModel.isAlertPlaying.collectAsState()
-    val context = LocalContext.current
     val config = viewModel.uiConfig
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         viewModel.sideEffect.collect { effect ->
             when (effect) {
-                is NearbySideEffect.ShowToast -> {
-                    Toast.makeText(
-                        context,
-                        effect.message,
-                        Toast.LENGTH_LONG
-                    ).show()
+                is NearbySideEffect.ShowMessage -> {
+                    scope.launch {
+                        snackbarHostState.showSnackbar(
+                            BaseSnackbarVisuals(
+                                message = effect.message,
+                                icon = effect.icon
+                            )
+                        )
+                    }
                 }
             }
         }
@@ -55,6 +62,7 @@ fun NearbyScreen(
         modifier = modifier,
         config = config,
         state = state,
+        snackbarHostState = snackbarHostState,
         isFlashLightEnabled = isFlashlightEnabled,
         isAlertEnabled = isAlertEnabled,
         onStartConnecting = {

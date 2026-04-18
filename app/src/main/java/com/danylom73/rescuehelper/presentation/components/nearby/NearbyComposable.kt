@@ -24,6 +24,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -39,6 +40,7 @@ import androidx.compose.ui.text.style.TextAlign
 import com.danylom73.rescuehelper.R
 import com.danylom73.rescuehelper.mvi.nearby.NearbyState
 import com.danylom73.rescuehelper.presentation.components.base.BaseButton
+import com.danylom73.rescuehelper.presentation.components.base.BaseSnackbarHost
 import com.danylom73.rescuehelper.presentation.components.base.BaseTopBar
 import com.danylom73.rescuehelper.presentation.screen.config.NearbyScreenUiConfig
 import com.danylom73.rescuehelper.presentation.ui.theme.AppTheme
@@ -47,6 +49,7 @@ import com.danylom73.rescuehelper.presentation.ui.theme.AppTheme
 @Composable
 fun NearbyComposable(
     modifier: Modifier = Modifier,
+    snackbarHostState: SnackbarHostState = SnackbarHostState(),
     config: NearbyScreenUiConfig,
     state: NearbyState,
     isFlashLightEnabled: Boolean = false,
@@ -75,6 +78,9 @@ fun NearbyComposable(
                     stringResource(R.string.nearby_title_default)
                 }
             )
+        },
+        snackbarHost = {
+            BaseSnackbarHost(snackbarHostState)
         },
         containerColor = Color.Transparent
     ) { innerPadding ->
