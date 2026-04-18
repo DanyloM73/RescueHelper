@@ -49,13 +49,11 @@ class NearbyViewModel @Inject constructor(
             is NearbyIntent.StartConnecting -> {
                 when (roleProvider.role) {
                     AppRole.RESPONDER -> {
-                        //sendSideEffect(NearbySideEffect.ShowToast("Discovery started"))
                         repository.startDiscovery()
                         updateState { copy(isDiscovering = true) }
                     }
 
                     AppRole.USER ->  {
-                        //sendSideEffect(NearbySideEffect.ShowToast("Advertising started"))
                         repository.startAdvertising()
                         updateState { copy(isAdvertising = true) }
                     }
@@ -65,13 +63,11 @@ class NearbyViewModel @Inject constructor(
             is NearbyIntent.StopConnecting -> {
                 when (roleProvider.role) {
                     AppRole.RESPONDER -> {
-                        //sendSideEffect(NearbySideEffect.ShowToast("Discovery stopped"))
                         repository.stopDiscovery()
                         updateState { copy(isDiscovering = false) }
                     }
 
                     AppRole.USER ->  {
-                        //sendSideEffect(NearbySideEffect.ShowToast("Advertising stopped"))
                         repository.stopAdvertising()
                         updateState { copy(isAdvertising = false) }
                     }
@@ -105,12 +101,10 @@ class NearbyViewModel @Inject constructor(
             }
 
             is NearbyIntent.ConnectToHost -> {
-                //sendSideEffect(NearbySideEffect.ShowToast("Connecting to host"))
                 repository.connectToHost(intent.endpointId)
             }
 
             is NearbyIntent.Disconnect -> {
-                //sendSideEffect(NearbySideEffect.ShowToast("Disconnecting"))
                 repository.disconnect()
             }
         }

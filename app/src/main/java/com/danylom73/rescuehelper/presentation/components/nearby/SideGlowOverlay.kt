@@ -25,8 +25,8 @@ import com.danylom73.rescuehelper.presentation.ui.theme.AppTheme
 @Composable
 fun SideGlowOverlay(
     modifier: Modifier = Modifier,
-    startColor: Color = AppTheme.colors.primary,
-    endColor: Color = Color.Transparent,
+    startColor: Color = Color.Transparent,
+    endColor: Color = AppTheme.colors.primary,
     colorTransitionEnabled: Boolean = false,
     durationMillis: Int = 1200,
     edgeWidth: Dp = AppTheme.dimens.spacingLarge,

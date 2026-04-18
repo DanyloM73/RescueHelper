@@ -87,7 +87,7 @@ fun NearbyComposable(
             ) {
                 SideGlowOverlay(
                     colorTransitionEnabled = true,
-                    startColor = AppTheme.extendedColors.orangeBackground
+                    endColor = AppTheme.extendedColors.orangeBackground
                 )
             }
 
@@ -98,7 +98,9 @@ fun NearbyComposable(
                 enter = fadeIn(),
                 exit = fadeOut()
             ) {
-                SideGlowOverlay()
+                SideGlowOverlay(
+                    startColor = AppTheme.colors.primary
+                )
             }
 
             AnimatedVisibility(
@@ -110,7 +112,7 @@ fun NearbyComposable(
             ) {
                 SideGlowOverlay(
                     colorTransitionEnabled = true,
-                    startColor = AppTheme.extendedColors.purpleBackground,
+                    endColor = AppTheme.extendedColors.purpleBackground,
                     durationMillis = 2000
                 )
             }

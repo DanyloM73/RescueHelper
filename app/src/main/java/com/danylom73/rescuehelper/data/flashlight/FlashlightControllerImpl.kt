@@ -40,30 +40,13 @@ class FlashlightControllerImpl @Inject constructor(
 
     private var blinkingJob: Job? = null
 
-    private val torchCallback = object : CameraManager.TorchCallback() {
-        override fun onTorchModeChanged(id: String, enabled: Boolean) {
-            if (id == cameraId) {
-                _isFlashlightEnabled.value = enabled
-            }
-        }
-
-        override fun onTorchModeUnavailable(id: String) {
-            if (id == cameraId) {
-                _isFlashlightEnabled.value = false
-            }
-        }
-    }
-
-    init {
-        cameraManager.registerTorchCallback(torchCallback, null)
-    }
-
     override fun setEnabled(enabled: Boolean) {
         stopBlinking()
         cameraId?.let { cameraManager.setTorchMode(it, enabled) }
     }
 
     override fun startBlinking(intervalMillis: Long) {
+        _isFlashlightEnabled.value = true
         if (blinkingJob?.isActive == true) return
 
         blinkingJob = CoroutineScope(SupervisorJob() + Dispatchers.Default).launch {
@@ -78,6 +61,7 @@ class FlashlightControllerImpl @Inject constructor(
     }
 
     override fun stopBlinking() {
+        _isFlashlightEnabled.value = false
         blinkingJob?.cancel()
         blinkingJob = null
     }
