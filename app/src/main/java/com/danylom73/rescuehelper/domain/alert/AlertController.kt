@@ -6,7 +6,7 @@ interface AlertController {
     val isPlayingFlow: StateFlow<Boolean>
     fun isPlaying(): Boolean
     fun startAlert(
-        soundVolume: Float = 0.1f,
+        soundVolume: Float = 1f,
         withVibration: Boolean = true
     )
     fun stopAlert()
