@@ -17,6 +17,10 @@
     <string name="nearby_connected_message">Connected to the victim</string>
     <string name="nearby_disconnected_message">Connection to the victim has been lost</string>
 
+    <!-- NEARBY SERVICE -->
+    <string name="nearby_service_channel_name" translatable="false">Rescue Helper Channel</string>
+    <string name="nearby_service_description">Application successfully launched</string>
+
     <!-- REQUIREMENT SCREEN -->
     <string name="requirement_title">Granting permissions</string>
     <string name="requirement_permission_category_title">Permission</string>

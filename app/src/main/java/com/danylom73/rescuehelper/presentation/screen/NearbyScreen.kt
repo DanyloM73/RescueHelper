@@ -6,7 +6,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.danylom73.rescuehelper.domain.nearby.NearbyCommand
@@ -15,7 +14,6 @@ import com.danylom73.rescuehelper.mvi.nearby.NearbySideEffect
 import com.danylom73.rescuehelper.mvi.nearby.NearbyViewModel
 import com.danylom73.rescuehelper.presentation.components.base.BaseSnackbarVisuals
 import com.danylom73.rescuehelper.presentation.components.nearby.NearbyComposable
-import kotlinx.coroutines.launch
 
 @Composable
 fun NearbyScreen(
@@ -23,37 +21,41 @@ fun NearbyScreen(
     viewModel: NearbyViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
-    val isFlashlightEnabled by viewModel.isFlashlightEnabled.collectAsState()
-    val isAlertEnabled by viewModel.isAlertPlaying.collectAsState()
     val config = viewModel.uiConfig
+
     val snackbarHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         viewModel.sideEffect.collect { effect ->
             when (effect) {
                 is NearbySideEffect.ShowMessage -> {
-                    scope.launch {
-                        snackbarHostState.showSnackbar(
-                            BaseSnackbarVisuals(
-                                message = effect.message,
-                                icon = effect.icon
-                            )
+                    snackbarHostState.showSnackbar(
+                        BaseSnackbarVisuals(
+                            message = effect.message,
+                            icon = effect.icon
                         )
-                    }
+                    )
                 }
             }
         }
     }
 
-    LaunchedEffect(state.connectedEndpointId) {
+    LaunchedEffect(
+        state.connectedEndpointId,
+        state.isLocalFlashlightEnabled,
+        state.isLocalAlertEnabled
+    ) {
         if (state.connectedEndpointId != null) {
             viewModel.handleIntent(
-                NearbyIntent.SendCurrentFlashlightState(isFlashlightEnabled)
+                NearbyIntent.SendCurrentFlashlightState(
+                    enabled = state.isLocalFlashlightEnabled
+                )
             )
 
             viewModel.handleIntent(
-                NearbyIntent.SendCurrentAlertState(isAlertEnabled)
+                NearbyIntent.SendCurrentAlertState(
+                    enabled = state.isLocalAlertEnabled
+                )
             )
         }
     }
@@ -63,8 +65,8 @@ fun NearbyScreen(
         config = config,
         state = state,
         snackbarHostState = snackbarHostState,
-        isFlashLightEnabled = isFlashlightEnabled,
-        isAlertEnabled = isAlertEnabled,
+        isFlashLightEnabled = state.isLocalFlashlightEnabled,
+        isAlertEnabled = state.isLocalAlertEnabled,
         onStartConnecting = {
             viewModel.handleIntent(NearbyIntent.StartConnecting)
         },

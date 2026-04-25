@@ -1,17 +1,21 @@
 package com.danylom73.rescuehelper.di
 
 import android.content.Context
+import com.danylom73.rescuehelper.core.role.RoleProvider
 import com.danylom73.rescuehelper.data.alert.AlertControllerImpl
 import com.danylom73.rescuehelper.data.flashlight.FlashlightControllerImpl
 import com.danylom73.rescuehelper.data.nearby.NearbyRepositoryImpl
+import com.danylom73.rescuehelper.data.nearby.runtime.NearbyRuntimeControllerImpl
 import com.danylom73.rescuehelper.domain.alert.AlertController
 import com.danylom73.rescuehelper.domain.flashlight.FlashlightController
 import com.danylom73.rescuehelper.domain.nearby.NearbyRepository
+import com.danylom73.rescuehelper.domain.nearby.NearbyRuntimeController
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
 import javax.inject.Singleton
 
 @Module
@@ -35,4 +39,20 @@ object NearbyModule {
     fun provideAlertController(
         @ApplicationContext context: Context
     ): AlertController = AlertControllerImpl(context)
+
+    @Provides
+    @Singleton
+    fun provideNearbyRuntimeController(
+        nearbyRepository: NearbyRepository,
+        roleProvider: RoleProvider,
+        flashlightController: FlashlightController,
+        alertController: AlertController,
+        @ApplicationScope appScope: CoroutineScope
+    ): NearbyRuntimeController = NearbyRuntimeControllerImpl(
+        nearbyRepository,
+        roleProvider,
+        flashlightController,
+        alertController,
+        appScope
+    )
 }

@@ -3,11 +3,13 @@ package com.danylom73.rescuehelper.mvi.nearby
 import com.danylom73.rescuehelper.domain.nearby.NearbyHost
 
 data class NearbyState(
-    val isAdvertising: Boolean = false,
     val isDiscovering: Boolean = false,
+    val isAdvertising: Boolean = false,
     val discoveredHosts: List<NearbyHost> = emptyList(),
     val connectedEndpointId: String? = null,
     val remoteFlashlightEnabled: Boolean = false,
     val remoteAlertEnabled: Boolean = false,
+    val isLocalFlashlightEnabled: Boolean = false,
+    val isLocalAlertEnabled: Boolean = false,
     val error: String? = null
 )

@@ -1,19 +1,19 @@
 package com.danylom73.rescuehelper.mvi.nearby
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.danylom73.rescuehelper.R
-import com.danylom73.rescuehelper.core.role.AppRole
-import com.danylom73.rescuehelper.core.role.RoleProvider
 import com.danylom73.rescuehelper.domain.alert.AlertController
 import com.danylom73.rescuehelper.domain.flashlight.FlashlightController
-import com.danylom73.rescuehelper.domain.nearby.NearbyCommand
 import com.danylom73.rescuehelper.domain.nearby.NearbyEvent
-import com.danylom73.rescuehelper.domain.nearby.NearbyRepository
+import com.danylom73.rescuehelper.domain.nearby.NearbyRuntimeController
 import com.danylom73.rescuehelper.domain.resource.ResourceManager
 import com.danylom73.rescuehelper.presentation.components.base.BaseSnackbarIcon
 import com.danylom73.rescuehelper.presentation.screen.config.NearbyScreenUiConfig
+import com.danylom73.rescuehelper.service.NearbyConnectionService
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,12 +25,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NearbyViewModel @Inject constructor(
-    private val repository: NearbyRepository,
-    private val roleProvider: RoleProvider,
+    private val runtimeController: NearbyRuntimeController,
     private val flashlightController: FlashlightController,
     private val alertController: AlertController,
     private val resourceManager: ResourceManager,
-    nearbyScreenUiConfig: NearbyScreenUiConfig
+    nearbyScreenUiConfig: NearbyScreenUiConfig,
+    @param:ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(NearbyState())
@@ -41,90 +41,83 @@ class NearbyViewModel @Inject constructor(
 
     val uiConfig = nearbyScreenUiConfig
 
-    val isFlashlightEnabled: StateFlow<Boolean> = flashlightController.isFlashlightEnabled
-    val isAlertPlaying: StateFlow<Boolean> = alertController.isPlayingFlow
-
     init {
-        observeRepository()
+        observeRuntimeState()
+        observeRuntimeEvents()
+        observeLocalDeviceState()
+    }
+
+    private fun observeRuntimeState() {
+        viewModelScope.launch {
+            runtimeController.connectionState.collect { runtimeState ->
+                updateState {
+                    copy(
+                        isAdvertising = runtimeState.isAdvertising,
+                        isDiscovering = runtimeState.isDiscovering,
+                        connectedEndpointId = runtimeState.connectedEndpointId
+                    )
+                }
+            }
+        }
+    }
+
+    private fun observeLocalDeviceState() {
+        viewModelScope.launch {
+            flashlightController.isFlashlightEnabled.collect { enabled ->
+                updateState {
+                    copy(isLocalFlashlightEnabled = enabled)
+                }
+            }
+        }
+
+        viewModelScope.launch {
+            alertController.isPlayingFlow.collect { enabled ->
+                updateState {
+                    copy(isLocalAlertEnabled = enabled)
+                }
+            }
+        }
     }
 
     fun handleIntent(intent: NearbyIntent) {
         when (intent) {
             is NearbyIntent.StartConnecting -> {
-                when (roleProvider.role) {
-                    AppRole.RESPONDER -> {
-                        repository.startDiscovery()
-                        updateState { copy(isDiscovering = true) }
-                    }
-
-                    AppRole.USER ->  {
-                        repository.startAdvertising()
-                        updateState { copy(isAdvertising = true) }
-                    }
-                }
+                NearbyConnectionService.start(context)
             }
 
             is NearbyIntent.StopConnecting -> {
-                when (roleProvider.role) {
-                    AppRole.RESPONDER -> {
-                        repository.stopDiscovery()
-                        updateState { copy(isDiscovering = false) }
-                    }
-
-                    AppRole.USER ->  {
-                        repository.stopAdvertising()
-                        updateState { copy(isAdvertising = false) }
-                    }
-                }
+                NearbyConnectionService.stop(context)
             }
 
-            is NearbyIntent.SendCommand -> repository.sendCommand(intent.command)
-
-            is NearbyIntent.SendCurrentFlashlightState -> {
-                if (roleProvider.role == AppRole.USER) {
-                    repository.sendCommand(
-                        if (intent.enabled) {
-                            NearbyCommand.FLASHLIGHT_STATE_ON
-                        } else {
-                            NearbyCommand.FLASHLIGHT_STATE_OFF
-                        }
-                    )
-                }
-            }
-
-            is NearbyIntent.SendCurrentAlertState -> {
-                if (roleProvider.role == AppRole.USER) {
-                    repository.sendCommand(
-                        if (intent.enabled) {
-                            NearbyCommand.ALERT_STATE_ON
-                        } else {
-                            NearbyCommand.ALERT_STATE_OFF
-                        }
-                    )
-                }
+            is NearbyIntent.SendCommand -> {
+                runtimeController.sendCommand(intent.command)
             }
 
             is NearbyIntent.ConnectToHost -> {
-                repository.connectToHost(intent.endpointId)
+                runtimeController.connectToHost(intent.endpointId)
             }
 
             is NearbyIntent.Disconnect -> {
-                repository.disconnect()
+                runtimeController.stop()
+                NearbyConnectionService.stop(context)
             }
+
+            else -> {}
         }
     }
 
-    private fun observeRepository() {
+    private fun observeRuntimeEvents() {
         viewModelScope.launch {
-            repository.observeEvents().collect { event ->
+            runtimeController.events.collect { event ->
                 when (event) {
-                    is NearbyEvent.HostFound ->
+                    is NearbyEvent.HostFound -> {
                         updateState {
                             if (discoveredHosts.any { it.endpointId == event.host.endpointId }) this
                             else copy(discoveredHosts = discoveredHosts + event.host)
                         }
+                    }
 
-                    is NearbyEvent.HostLost ->
+                    is NearbyEvent.HostLost -> {
                         updateState {
                             copy(
                                 discoveredHosts = discoveredHosts.filterNot {
@@ -132,64 +125,45 @@ class NearbyViewModel @Inject constructor(
                                 }
                             )
                         }
+                    }
 
                     is NearbyEvent.Connected -> {
+                        updateState {
+                            copy(
+                                connectedEndpointId = event.endpointId,
+                                isDiscovering = false,
+                                isAdvertising = false,
+                                discoveredHosts = emptyList()
+                            )
+                        }
+
                         postSideEffect(
                             NearbySideEffect.ShowMessage(
                                 resourceManager.getString(R.string.nearby_connected_message),
                                 BaseSnackbarIcon.CONNECTED
                             )
                         )
-                        updateState {
-                            copy(
-                                isDiscovering = false,
-                                connectedEndpointId = event.endpointId,
-                                discoveredHosts = emptyList()
-                            )
-                        }
                     }
 
-                    is NearbyEvent.Disconnected -> {
+                    NearbyEvent.Disconnected -> {
+                        updateState {
+                            copy(connectedEndpointId = null)
+                        }
+
                         postSideEffect(
                             NearbySideEffect.ShowMessage(
                                 resourceManager.getString(R.string.nearby_disconnected_message),
                                 BaseSnackbarIcon.DISCONNECTED
                             )
                         )
-                        updateState {
-                            copy(
-                                connectedEndpointId = null
-                            )
-                        }
-                    }
-
-                    is NearbyEvent.CommandReceived -> {
-                        when (event.command) {
-                            NearbyCommand.START_FLASHLIGHT_BLINKING -> flashlightController.startBlinking()
-                            NearbyCommand.STOP_FLASHLIGHT_BLINKING -> {
-                                flashlightController.stopBlinking()
-                                flashlightController.setEnabled(false)
-                            }
-
-                            NearbyCommand.START_ALERT -> alertController.startAlert()
-                            NearbyCommand.STOP_ALERT -> alertController.stopAlert()
-
-                            NearbyCommand.FLASHLIGHT_STATE_ON ->
-                                updateState { copy(remoteFlashlightEnabled = true) }
-                            NearbyCommand.FLASHLIGHT_STATE_OFF ->
-                                updateState { copy(remoteFlashlightEnabled = false) }
-
-                            NearbyCommand.ALERT_STATE_ON ->
-                                updateState { copy(remoteAlertEnabled = true) }
-                            NearbyCommand.ALERT_STATE_OFF ->
-                                updateState { copy(remoteAlertEnabled = false) }
-                        }
                     }
 
                     is NearbyEvent.Error -> {
                         updateState { copy(error = event.error) }
                         postSideEffect(NearbySideEffect.ShowMessage(event.error))
                     }
+
+                    else -> Unit
                 }
             }
         }

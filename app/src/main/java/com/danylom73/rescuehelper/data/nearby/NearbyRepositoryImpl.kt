@@ -14,11 +14,8 @@ import com.google.android.gms.nearby.connection.DiscoveryOptions
 import com.google.android.gms.nearby.connection.Payload
 import com.google.android.gms.nearby.connection.Strategy
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -30,14 +27,21 @@ class NearbyRepositoryImpl @Inject constructor(
 ) : NearbyRepository {
 
     private val client = Nearby.getConnectionsClient(context)
-    private val events = MutableSharedFlow<NearbyEvent>()
+
+    private val events = MutableSharedFlow<NearbyEvent>(
+        extraBufferCapacity = 64
+    )
 
     private var currentEndpoint: String? = null
 
     private val emit: NearbyEventEmitter = { event ->
-        CoroutineScope(Dispatchers.IO).launch {
-            events.emit(event)
+        when (event) {
+            is NearbyEvent.Connected -> currentEndpoint = event.endpointId
+            NearbyEvent.Disconnected -> currentEndpoint = null
+            else -> Unit
         }
+
+        events.tryEmit(event)
     }
 
     private val payloadHandler = PayloadHandler(emit)
@@ -47,24 +51,6 @@ class NearbyRepositoryImpl @Inject constructor(
 
     private val discoveryHandler = EndpointDiscoveryHandler(emit)
 
-    init {
-        CoroutineScope(Dispatchers.IO).launch {
-            events.collect { event ->
-                when (event) {
-                    is NearbyEvent.Connected -> {
-                        currentEndpoint = event.endpointId
-                    }
-
-                    NearbyEvent.Disconnected -> {
-                        currentEndpoint = null
-                    }
-
-                    else -> Unit
-                }
-            }
-        }
-    }
-
     override fun startAdvertising() {
         client.startAdvertising(
             Build.MODEL,
@@ -73,7 +59,9 @@ class NearbyRepositoryImpl @Inject constructor(
             AdvertisingOptions.Builder()
                 .setStrategy(Strategy.P2P_POINT_TO_POINT)
                 .build()
-        )
+        ).addOnFailureListener {
+            emit(NearbyEvent.Error(it.message ?: "Advertising start failed"))
+        }
     }
 
     override fun startDiscovery() {
@@ -83,7 +71,9 @@ class NearbyRepositoryImpl @Inject constructor(
             DiscoveryOptions.Builder()
                 .setStrategy(Strategy.P2P_POINT_TO_POINT)
                 .build()
-        )
+        ).addOnFailureListener {
+            emit(NearbyEvent.Error(it.message ?: "Discovery start failed"))
+        }
     }
 
     override fun stopAdvertising() {
@@ -99,25 +89,34 @@ class NearbyRepositoryImpl @Inject constructor(
             Build.DEVICE,
             endpointId,
             connectionHandler
-        )
+        ).addOnFailureListener {
+            emit(NearbyEvent.Error(it.message ?: "Connection request failed"))
+        }
     }
 
     override fun disconnect() {
-        currentEndpoint?.let {
-            client.disconnectFromEndpoint(it)
+        currentEndpoint?.let { endpoint ->
+            client.disconnectFromEndpoint(endpoint)
         }
 
         client.stopAllEndpoints()
         currentEndpoint = null
+        emit(NearbyEvent.Disconnected)
     }
 
-
     override fun sendCommand(command: NearbyCommand) {
-        currentEndpoint?.let {
-            client.sendPayload(
-                it,
-                Payload.fromBytes(command.name.toByteArray())
-            )
+        val endpoint = currentEndpoint
+
+        if (endpoint == null) {
+            emit(NearbyEvent.Error("No connected endpoint"))
+            return
+        }
+
+        client.sendPayload(
+            endpoint,
+            Payload.fromBytes(command.name.toByteArray())
+        ).addOnFailureListener {
+            emit(NearbyEvent.Error(it.message ?: "Command send failed"))
         }
     }
 

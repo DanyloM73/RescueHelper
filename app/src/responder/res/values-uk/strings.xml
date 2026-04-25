@@ -17,6 +17,9 @@
     <string name="nearby_connected_message">Підключено до потерпілого</string>
     <string name="nearby_disconnected_message">Зʼєднання з потерпілим розірвано</string>
 
+    <!-- NEARBY SERVICE -->
+    <string name="nearby_service_description">Застосунок запущено успішно</string>
+
     <!-- REQUIREMENT SCREEN -->
     <string name="requirement_title">Надання дозволів</string>
     <string name="requirement_permission_category_title">Дозвіл</string>
