@@ -94,6 +94,12 @@ class NearbyViewModel @Inject constructor(
             }
 
             is NearbyIntent.ConnectToHost -> {
+                postSideEffect(
+                    NearbySideEffect.ShowMessage(
+                        resourceManager.getString(R.string.nearby_connecting_message),
+                        BaseSnackbarIcon.INFO
+                    )
+                )
                 runtimeController.connectToHost(intent.endpointId)
             }
 
@@ -146,21 +152,32 @@ class NearbyViewModel @Inject constructor(
                     }
 
                     NearbyEvent.Disconnected -> {
+                        val wasConnected = state.value.connectedEndpointId != null
+
                         updateState {
-                            copy(connectedEndpointId = null)
+                            copy(
+                                connectedEndpointId = null
+                            )
                         }
 
-                        postSideEffect(
-                            NearbySideEffect.ShowMessage(
-                                resourceManager.getString(R.string.nearby_disconnected_message),
-                                BaseSnackbarIcon.DISCONNECTED
+                        if (wasConnected) {
+                            postSideEffect(
+                                NearbySideEffect.ShowMessage(
+                                    resourceManager.getString(R.string.nearby_disconnected_message),
+                                    BaseSnackbarIcon.DISCONNECTED
+                                )
                             )
-                        )
+                        }
                     }
 
                     is NearbyEvent.Error -> {
                         updateState { copy(error = event.error) }
-                        postSideEffect(NearbySideEffect.ShowMessage(event.error))
+                        postSideEffect(
+                            NearbySideEffect.ShowMessage(
+                                event.error,
+                                BaseSnackbarIcon.ERROR
+                            )
+                        )
                     }
 
                     else -> Unit
