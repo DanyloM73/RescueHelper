@@ -53,11 +53,13 @@ class NearbyConnectionService : Service() {
 
     private fun startAsForeground() {
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(getString(R.string.app_name))
             .setContentText(getString(R.string.nearby_service_description))
             .setOngoing(true)
-            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setAutoCancel(false)
+            .setCategory(NotificationCompat.CATEGORY_SERVICE)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
             .build()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -78,7 +80,7 @@ class NearbyConnectionService : Service() {
         val channel = NotificationChannel(
             CHANNEL_ID,
             getString(R.string.nearby_service_channel_name),
-            NotificationManager.IMPORTANCE_LOW
+            NotificationManager.IMPORTANCE_HIGH
         )
 
         val manager = getSystemService(NotificationManager::class.java)

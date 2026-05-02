@@ -4,6 +4,7 @@ import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.LocationSearching
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.outlined.Bluetooth
 import androidx.compose.material.icons.outlined.Radar
 import androidx.compose.material.icons.outlined.Wifi
@@ -27,6 +28,12 @@ enum class RequirementType(
         R.string.requirement_location_permission_title,
         false,
         Icons.Filled.LocationSearching
+    ),
+    NotificationPermission(
+        RequirementCategory.Permission,
+        R.string.requirement_notification_permission_title,
+        false,
+        Icons.Filled.Notifications
     ),
     BluetoothEnabled(
         RequirementCategory.Feature,

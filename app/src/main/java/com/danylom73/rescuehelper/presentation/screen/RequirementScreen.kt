@@ -99,6 +99,16 @@ fun RequirementScreen(
                 )
             }
 
+            RequirementType.NotificationPermission -> {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    permissionLauncher.launch(
+                        Manifest.permission.POST_NOTIFICATIONS
+                    )
+                } else {
+                    viewModel.process(RequirementIntent.OnRequirementRefresh)
+                }
+            }
+
             RequirementType.BluetoothEnabled -> {
                 if (context as? Activity != null) {
                     val intent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)

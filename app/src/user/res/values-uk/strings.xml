@@ -27,6 +27,7 @@
     <string name="requirement_feature_category_title">Функція</string>
     <string name="requirement_bluetooth_permission_title">Дозвіл на використання Bluetooth</string>
     <string name="requirement_location_permission_title">Дозвіл на використання місцезнаходження</string>
+    <string name="requirement_notification_permission_title">Дозвіл на надсилання повідомлень</string>
     <string name="requirement_nearby_permission_title">Дозвіл на використання пристроїв поблизу</string>
     <string name="requirement_bluetooth_feature_title">Bluetooth</string>
     <string name="requirement_location_feature_title">Місцезнаходження</string>

@@ -37,6 +37,10 @@ class RequirementRepositoryImpl @Inject constructor(
             hasLocationPermission()
         ),
         Requirement(
+            RequirementType.NotificationPermission,
+            hasNotificationPermission()
+        ),
+        Requirement(
             RequirementType.BluetoothEnabled,
             isBluetoothEnabled()
         ),
@@ -111,6 +115,16 @@ class RequirementRepositoryImpl @Inject constructor(
                 Manifest.permission.BLUETOOTH_ADVERTISE
             ) == PackageManager.PERMISSION_GRANTED
         } else true
+
+    private fun hasNotificationPermission(): Boolean =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+        } else {
+            true
+        }
 
     private fun isBluetoothEnabled(): Boolean {
         val manager = context.getSystemService(BluetoothManager::class.java)

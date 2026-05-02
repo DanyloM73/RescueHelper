@@ -28,6 +28,7 @@
     <string name="requirement_feature_category_title">Feature</string>
     <string name="requirement_bluetooth_permission_title">Bluetooth permission</string>
     <string name="requirement_location_permission_title">Location permission</string>
+    <string name="requirement_notification_permission_title">Notification permission</string>
     <string name="requirement_nearby_permission_title">Nearby permission</string>
     <string name="requirement_bluetooth_feature_title">Bluetooth</string>
     <string name="requirement_location_feature_title">Location</string>
