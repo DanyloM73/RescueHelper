@@ -88,6 +88,18 @@ class NearbyRuntimeControllerImpl @Inject constructor(
                                 isDiscovering = false
                             )
                         }
+
+                        sendCommand(
+                            if (flashlightController.isFlashlightEnabled.value)
+                                NearbyCommand.FLASHLIGHT_STATE_ON
+                            else NearbyCommand.FLASHLIGHT_STATE_OFF
+                        )
+
+                        sendCommand(
+                            if (alertController.isPlayingFlow.value)
+                                NearbyCommand.ALERT_STATE_ON
+                            else NearbyCommand.ALERT_STATE_OFF
+                        )
                     }
 
                     NearbyEvent.Disconnected -> {
@@ -125,7 +137,17 @@ class NearbyRuntimeControllerImpl @Inject constructor(
                 alertController.stopAlert()
             }
 
-            else -> Unit
+            NearbyCommand.ALERT_STATE_ON ->
+                _connectionState.update { it.copy(remoteAlertEnabled = true) }
+
+            NearbyCommand.ALERT_STATE_OFF ->
+                _connectionState.update { it.copy(remoteAlertEnabled = false) }
+
+            NearbyCommand.FLASHLIGHT_STATE_ON ->
+                _connectionState.update { it.copy(remoteFlashlightEnabled = true) }
+
+            NearbyCommand.FLASHLIGHT_STATE_OFF ->
+                _connectionState.update { it.copy(remoteAlertEnabled = false) }
         }
     }
 }

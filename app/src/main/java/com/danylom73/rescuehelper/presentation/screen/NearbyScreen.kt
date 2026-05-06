@@ -40,26 +40,6 @@ fun NearbyScreen(
         }
     }
 
-    LaunchedEffect(
-        state.connectedEndpointId,
-        state.isLocalFlashlightEnabled,
-        state.isLocalAlertEnabled
-    ) {
-        if (state.connectedEndpointId != null) {
-            viewModel.handleIntent(
-                NearbyIntent.SendCurrentFlashlightState(
-                    enabled = state.isLocalFlashlightEnabled
-                )
-            )
-
-            viewModel.handleIntent(
-                NearbyIntent.SendCurrentAlertState(
-                    enabled = state.isLocalAlertEnabled
-                )
-            )
-        }
-    }
-
     NearbyComposable(
         modifier = modifier,
         config = config,

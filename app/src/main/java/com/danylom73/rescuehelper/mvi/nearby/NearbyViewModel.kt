@@ -54,7 +54,9 @@ class NearbyViewModel @Inject constructor(
                     copy(
                         isAdvertising = runtimeState.isAdvertising,
                         isDiscovering = runtimeState.isDiscovering,
-                        connectedEndpointId = runtimeState.connectedEndpointId
+                        connectedEndpointId = runtimeState.connectedEndpointId,
+                        remoteAlertEnabled = runtimeState.remoteAlertEnabled,
+                        remoteFlashlightEnabled = runtimeState.remoteFlashlightEnabled
                     )
                 }
             }
@@ -151,7 +153,7 @@ class NearbyViewModel @Inject constructor(
                         )
                     }
 
-                    NearbyEvent.Disconnected -> {
+                    is NearbyEvent.Disconnected -> {
                         val wasConnected = state.value.connectedEndpointId != null
 
                         updateState {
