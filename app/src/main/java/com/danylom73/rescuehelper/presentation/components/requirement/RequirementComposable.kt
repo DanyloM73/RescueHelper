@@ -16,6 +16,11 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,6 +30,7 @@ import com.danylom73.rescuehelper.R
 import com.danylom73.rescuehelper.domain.requirement.Requirement
 import com.danylom73.rescuehelper.mvi.requirement.RequirementState
 import com.danylom73.rescuehelper.presentation.components.base.BaseButton
+import com.danylom73.rescuehelper.presentation.components.base.BaseCheckbox
 import com.danylom73.rescuehelper.presentation.components.base.BaseTopBar
 import com.danylom73.rescuehelper.presentation.ui.theme.AppTheme
 
@@ -34,8 +40,24 @@ fun RequirementComposable(
     modifier: Modifier = Modifier,
     state: RequirementState,
     onRequirementClick: (Requirement) -> Unit,
-    onContinueClick: () -> Unit
+    onContinueClick: (Boolean) -> Unit
 ) {
+    var autoContinueChecked by rememberSaveable(state.autoContinue) {
+        mutableStateOf(state.autoContinue)
+    }
+
+    var requirementsGranted by rememberSaveable(state.requirements) {
+        mutableStateOf(
+            state.requirements.values.all { list ->
+                list.all { it.isGranted || it.type.isOptional }
+            }
+        )
+    }
+
+    LaunchedEffect(state.autoContinue) {
+        if (state.autoContinue && requirementsGranted) onContinueClick(autoContinueChecked)
+    }
+
     Scaffold(
         topBar = { BaseTopBar(stringResource(R.string.requirement_title)) },
         containerColor = Color.Transparent
@@ -96,13 +118,20 @@ fun RequirementComposable(
                     }
                 }
 
+                BaseCheckbox(
+                    checked = autoContinueChecked,
+                    text = stringResource(R.string.requirement_automatic_continue),
+                    onCheckedChange = { autoContinueChecked = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = AppTheme.dimens.spacingRegular)
+                )
+
                 BaseButton(
                     modifier = Modifier.fillMaxWidth(),
                     buttonText = stringResource(R.string.requirement_continue_button_text),
-                    isEnabled = state.requirements.values.all { list ->
-                        list.all { it.isGranted || it.type.isOptional }
-                    },
-                    onClick = { onContinueClick() }
+                    isEnabled = requirementsGranted,
+                    onClick = { onContinueClick(autoContinueChecked) }
                 )
             }
         }

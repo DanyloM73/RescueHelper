@@ -10,6 +10,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -21,6 +22,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.danylom73.rescuehelper.domain.requirement.Requirement
 import com.danylom73.rescuehelper.domain.requirement.RequirementType
 import com.danylom73.rescuehelper.mvi.requirement.RequirementIntent
+import com.danylom73.rescuehelper.mvi.requirement.RequirementSideEffect
 import com.danylom73.rescuehelper.mvi.requirement.RequirementViewModel
 import com.danylom73.rescuehelper.presentation.components.requirement.RequirementComposable
 import com.danylom73.rescuehelper.presentation.navigation.Screen
@@ -38,31 +40,39 @@ fun RequirementScreen(
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) {
-        viewModel.process(RequirementIntent.OnRequirementRefresh)
+        viewModel.handleIntent(RequirementIntent.OnRequirementRefresh)
     }
 
     val multiplePermissionsLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
     ) {
-        viewModel.process(RequirementIntent.OnRequirementRefresh)
+        viewModel.handleIntent(RequirementIntent.OnRequirementRefresh)
     }
 
     val bluetoothLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) {
-        viewModel.process(RequirementIntent.OnRequirementRefresh)
+        viewModel.handleIntent(RequirementIntent.OnRequirementRefresh)
     }
 
     val settingsLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) {
-        viewModel.process(RequirementIntent.OnRequirementRefresh)
+        viewModel.handleIntent(RequirementIntent.OnRequirementRefresh)
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.sideEffect.collect { effect ->
+            when (effect) {
+                is RequirementSideEffect.GoToMain -> navigate(Screen.NearbyScreen.route)
+            }
+        }
     }
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
-                viewModel.process(RequirementIntent.OnRequirementRefresh)
+                viewModel.handleIntent(RequirementIntent.OnRequirementRefresh)
             }
         }
 
@@ -105,7 +115,7 @@ fun RequirementScreen(
                         Manifest.permission.POST_NOTIFICATIONS
                     )
                 } else {
-                    viewModel.process(RequirementIntent.OnRequirementRefresh)
+                    viewModel.handleIntent(RequirementIntent.OnRequirementRefresh)
                 }
             }
 
@@ -136,6 +146,6 @@ fun RequirementScreen(
         modifier = modifier,
         state = state,
         onRequirementClick = { processRequirement(it) },
-        onContinueClick = { navigate(Screen.NearbyScreen.route) }
+        onContinueClick = { viewModel.handleIntent(RequirementIntent.OnContinue(it)) }
     )
 }

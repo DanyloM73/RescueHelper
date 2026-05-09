@@ -32,5 +32,6 @@
     <string name="requirement_bluetooth_feature_title">Bluetooth</string>
     <string name="requirement_location_feature_title">Місцезнаходження</string>
     <string name="requirement_wifi_feature_title">Wi-Fi</string>
+    <string name="requirement_automatic_continue">Автоматичний вхід</string>
     <string name="requirement_continue_button_text">Продовжити</string>
 </resources>

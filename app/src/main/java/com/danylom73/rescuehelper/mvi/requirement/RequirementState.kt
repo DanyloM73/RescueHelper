@@ -4,5 +4,6 @@ import com.danylom73.rescuehelper.domain.requirement.Requirement
 import com.danylom73.rescuehelper.domain.requirement.RequirementCategory
 
 data class RequirementState(
-    val requirements: Map<RequirementCategory, List<Requirement>> = emptyMap()
+    val requirements: Map<RequirementCategory, List<Requirement>> = emptyMap(),
+    val autoContinue: Boolean = false
 )

@@ -76,6 +76,9 @@ dependencies {
     // Nearby Connection
     implementation(libs.play.services.nearby)
 
+    // Data Store
+    implementation(libs.androidx.datastore.preferences)
+
     // Hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
