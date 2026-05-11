@@ -7,4 +7,5 @@ sealed interface NearbyEvent {
     data object Disconnected : NearbyEvent
     data class CommandReceived(val command: NearbyCommand) : NearbyEvent
     data class Error(val error: String) : NearbyEvent
+    data object CriticalRequirementLost : NearbyEvent
 }

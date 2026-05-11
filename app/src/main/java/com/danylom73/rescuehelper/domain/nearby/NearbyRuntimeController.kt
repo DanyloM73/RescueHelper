@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface NearbyRuntimeController {
     fun startForCurrentRole()
-    fun stop()
+    fun stop(isRequirementLost: Boolean = false)
     fun connectToHost(endpointId: String)
     fun sendCommand(command: NearbyCommand)
     val connectionState: StateFlow<NearbyRuntimeState>

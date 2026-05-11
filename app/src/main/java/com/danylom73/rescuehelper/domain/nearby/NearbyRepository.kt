@@ -10,5 +10,6 @@ interface NearbyRepository {
     fun connectToHost(endpointId: String)
     fun disconnect()
     fun sendCommand(command: NearbyCommand)
+    fun handleRequirementLost()
     fun observeEvents(): Flow<NearbyEvent>
 }

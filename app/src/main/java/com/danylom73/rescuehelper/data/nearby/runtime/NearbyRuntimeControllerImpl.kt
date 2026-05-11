@@ -52,10 +52,12 @@ class NearbyRuntimeControllerImpl @Inject constructor(
         }
     }
 
-    override fun stop() {
+    override fun stop(isRequirementLost: Boolean) {
         repository.stopAdvertising()
         repository.stopDiscovery()
         repository.disconnect()
+
+        if (isRequirementLost) repository.handleRequirementLost()
 
         flashlightController.stopBlinking()
         flashlightController.setEnabled(false)

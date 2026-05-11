@@ -182,6 +182,10 @@ class NearbyViewModel @Inject constructor(
                         )
                     }
 
+                    is NearbyEvent.CriticalRequirementLost -> postSideEffect(
+                        NearbySideEffect.NavigateToRequirements
+                    )
+
                     else -> Unit
                 }
             }

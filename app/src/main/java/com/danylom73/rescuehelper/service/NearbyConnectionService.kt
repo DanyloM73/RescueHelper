@@ -104,7 +104,7 @@ class NearbyConnectionService : Service() {
     ) {
         requirementMonitor.stop()
 
-        runtimeController.stop()
+        runtimeController.stop(showReasonNotification)
 
         if (showReasonNotification && failedRequirementType != null) {
             notificationController.showStoppedByRequirementNotification(

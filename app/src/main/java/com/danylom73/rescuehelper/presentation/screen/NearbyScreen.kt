@@ -14,11 +14,13 @@ import com.danylom73.rescuehelper.mvi.nearby.NearbySideEffect
 import com.danylom73.rescuehelper.mvi.nearby.NearbyViewModel
 import com.danylom73.rescuehelper.presentation.components.base.BaseSnackbarVisuals
 import com.danylom73.rescuehelper.presentation.components.nearby.NearbyComposable
+import com.danylom73.rescuehelper.presentation.navigation.Screen
 
 @Composable
 fun NearbyScreen(
     modifier: Modifier = Modifier,
-    viewModel: NearbyViewModel = hiltViewModel()
+    viewModel: NearbyViewModel = hiltViewModel(),
+    navigate: (String) -> Unit
 ) {
     val state by viewModel.state.collectAsState()
     val config = viewModel.uiConfig
@@ -36,6 +38,9 @@ fun NearbyScreen(
                         )
                     )
                 }
+
+                is NearbySideEffect.NavigateToRequirements ->
+                    navigate(Screen.RequirementScreen.route)
             }
         }
     }

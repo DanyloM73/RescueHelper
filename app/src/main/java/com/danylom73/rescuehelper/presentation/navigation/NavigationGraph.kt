@@ -19,19 +19,20 @@ fun NavigationGraph(
     ) {
         composable(Screen.RequirementScreen.route) {
             RequirementScreen(modifier = modifier) { navTo ->
-                if (navTo == Screen.NearbyScreen.route) {
-                    navHostController.navigate(navTo) {
-                        popUpTo(0) { inclusive = true }
-                        launchSingleTop = true
-                    }
-                } else {
-                    navHostController.navigate(navTo)
+                navHostController.navigate(navTo) {
+                    popUpTo(0) { inclusive = true }
+                    launchSingleTop = true
                 }
             }
         }
 
         composable(Screen.NearbyScreen.route) {
-            NearbyScreen(modifier = modifier)
+            NearbyScreen(modifier = modifier) { navTo ->
+                navHostController.navigate(navTo) {
+                    popUpTo(0) { inclusive = true }
+                    launchSingleTop = true
+                }
+            }
         }
     }
 }

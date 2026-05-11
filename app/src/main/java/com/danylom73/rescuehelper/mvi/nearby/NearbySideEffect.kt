@@ -7,4 +7,6 @@ sealed interface NearbySideEffect {
         val message: String,
         val icon: BaseSnackbarIcon? = null
     ) : NearbySideEffect
+
+    data object NavigateToRequirements : NearbySideEffect
 }

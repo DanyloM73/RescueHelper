@@ -120,6 +120,8 @@ class NearbyRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun handleRequirementLost() { emit(NearbyEvent.CriticalRequirementLost) }
+
     override fun observeEvents(): Flow<NearbyEvent> = events
 
     companion object {
