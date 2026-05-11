@@ -1,18 +1,18 @@
 package com.danylom73.rescuehelper.service
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
-import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
-import com.danylom73.rescuehelper.R
+import com.danylom73.rescuehelper.data.notification.NotificationControllerImpl
 import com.danylom73.rescuehelper.domain.nearby.NearbyRuntimeController
+import com.danylom73.rescuehelper.domain.notification.NotificationController
+import com.danylom73.rescuehelper.domain.requirement.RequirementMonitor
+import com.danylom73.rescuehelper.domain.requirement.RequirementType
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -22,22 +22,37 @@ class NearbyConnectionService : Service() {
     @Inject
     lateinit var runtimeController: NearbyRuntimeController
 
+    @Inject
+    lateinit var requirementMonitor: RequirementMonitor
+
+    @Inject
+    lateinit var notificationController: NotificationController
+
+    private var stoppedByUser: Boolean = false
+    private var stoppedBecauseOfRequirement: Boolean = false
+
     override fun onCreate() {
         super.onCreate()
-        createNotificationChannel()
+        notificationController.createNotificationChannel()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
             ACTION_START -> {
+                stoppedByUser = false
+                stoppedBecauseOfRequirement = false
+
                 startAsForeground()
                 runtimeController.startForCurrentRole()
+
+                requirementMonitor.start { failedRequirementType ->
+                    handleCriticalRequirementLost(failedRequirementType)
+                }
             }
 
             ACTION_STOP -> {
-                runtimeController.stop()
-                stopForeground(STOP_FOREGROUND_REMOVE)
-                stopSelf()
+                stoppedByUser = true
+                stopNearbyService(showReasonNotification = false)
             }
         }
 
@@ -45,52 +60,63 @@ class NearbyConnectionService : Service() {
     }
 
     override fun onDestroy() {
-        runtimeController.stop()
+        requirementMonitor.stop()
+
+        if (stoppedByUser || stoppedBecauseOfRequirement) {
+            runtimeController.stop()
+        }
+
         super.onDestroy()
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
 
     private fun startAsForeground() {
-        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle(getString(R.string.app_name))
-            .setContentText(getString(R.string.nearby_service_description))
-            .setOngoing(true)
-            .setAutoCancel(false)
-            .setCategory(NotificationCompat.CATEGORY_SERVICE)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .build()
+        val notification = notificationController.buildForegroundNotification()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             ServiceCompat.startForeground(
                 this,
-                NOTIFICATION_ID,
+                NotificationControllerImpl.FOREGROUND_NOTIFICATION_ID,
                 notification,
                 ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE
             )
         } else {
-            startForeground(NOTIFICATION_ID, notification)
+            startForeground(
+                NotificationControllerImpl.FOREGROUND_NOTIFICATION_ID,
+                notification
+            )
         }
     }
 
-    private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
+    private fun handleCriticalRequirementLost(type: RequirementType) {
+        stoppedBecauseOfRequirement = true
 
-        val channel = NotificationChannel(
-            CHANNEL_ID,
-            getString(R.string.nearby_service_channel_name),
-            NotificationManager.IMPORTANCE_HIGH
+        stopNearbyService(
+            showReasonNotification = true,
+            failedRequirementType = type
         )
+    }
 
-        val manager = getSystemService(NotificationManager::class.java)
-        manager.createNotificationChannel(channel)
+    private fun stopNearbyService(
+        showReasonNotification: Boolean,
+        failedRequirementType: RequirementType? = null
+    ) {
+        requirementMonitor.stop()
+
+        runtimeController.stop()
+
+        if (showReasonNotification && failedRequirementType != null) {
+            notificationController.showStoppedByRequirementNotification(
+                failedRequirementType
+            )
+        }
+
+        stopForeground(STOP_FOREGROUND_REMOVE)
+        stopSelf()
     }
 
     companion object {
-        private const val CHANNEL_ID = "nearby_connection_service"
-        private const val NOTIFICATION_ID = 1001
-
         const val ACTION_START = "com.danylom73.rescuehelper.START_NEARBY_SERVICE"
         const val ACTION_STOP = "com.danylom73.rescuehelper.STOP_NEARBY_SERVICE"
 

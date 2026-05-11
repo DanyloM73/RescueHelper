@@ -21,6 +21,12 @@
     <!-- NEARBY SERVICE -->
     <string name="nearby_service_channel_name" translatable="false">Rescue Helper Channel</string>
     <string name="nearby_service_description">Application successfully launched</string>
+    <string name="nearby_stopped_permissions_lost">The connection has been stopped because the required permissions have been disabled</string>
+    <string name="nearby_stopped_location_permission_lost">Connection stopped because location permission is disabled</string>
+    <string name="nearby_stopped_notification_permission_lost">Connection stopped because notification permission is disabled</string>
+    <string name="nearby_stopped_bluetooth_disabled">Connection stopped because Bluetooth is disabled</string>
+    <string name="nearby_stopped_location_disabled">Connection stopped because location services are disabled</string>
+    <string name="nearby_stopped_wifi_disabled">Connection stopped because Wi-Fi is disabled</string>
 
     <!-- REQUIREMENT SCREEN -->
     <string name="requirement_title">Granting permissions</string>

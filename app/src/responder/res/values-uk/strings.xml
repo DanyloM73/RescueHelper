@@ -20,6 +20,12 @@
 
     <!-- NEARBY SERVICE -->
     <string name="nearby_service_description">Застосунок запущено успішно</string>
+    <string name="nearby_stopped_permissions_lost">З’єднання зупинено, оскільки необхідні дозволи вимкнено</string>
+    <string name="nearby_stopped_location_permission_lost">З’єднання зупинено, оскільки дозвіл на геолокацію вимкнено</string>
+    <string name="nearby_stopped_notification_permission_lost">З’єднання зупинено, оскільки дозвіл на сповіщення вимкнено</string>
+    <string name="nearby_stopped_bluetooth_disabled">З’єднання зупинено, оскільки Bluetooth вимкнено</string>
+    <string name="nearby_stopped_location_disabled">З’єднання зупинено, оскільки служби геолокації вимкнено</string>
+    <string name="nearby_stopped_wifi_disabled">З’єднання зупинено, оскільки Wi-Fi вимкнено</string>
 
     <!-- REQUIREMENT SCREEN -->
     <string name="requirement_title">Надання дозволів</string>

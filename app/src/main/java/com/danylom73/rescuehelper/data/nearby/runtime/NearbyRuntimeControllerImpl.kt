@@ -147,7 +147,7 @@ class NearbyRuntimeControllerImpl @Inject constructor(
                 _connectionState.update { it.copy(remoteFlashlightEnabled = true) }
 
             NearbyCommand.FLASHLIGHT_STATE_OFF ->
-                _connectionState.update { it.copy(remoteAlertEnabled = false) }
+                _connectionState.update { it.copy(remoteFlashlightEnabled = false) }
         }
     }
 }

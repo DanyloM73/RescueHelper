@@ -6,10 +6,12 @@ import com.danylom73.rescuehelper.data.alert.AlertControllerImpl
 import com.danylom73.rescuehelper.data.flashlight.FlashlightControllerImpl
 import com.danylom73.rescuehelper.data.nearby.NearbyRepositoryImpl
 import com.danylom73.rescuehelper.data.nearby.runtime.NearbyRuntimeControllerImpl
+import com.danylom73.rescuehelper.data.notification.NotificationControllerImpl
 import com.danylom73.rescuehelper.domain.alert.AlertController
 import com.danylom73.rescuehelper.domain.flashlight.FlashlightController
 import com.danylom73.rescuehelper.domain.nearby.NearbyRepository
 import com.danylom73.rescuehelper.domain.nearby.NearbyRuntimeController
+import com.danylom73.rescuehelper.domain.notification.NotificationController
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -55,4 +57,10 @@ object NearbyModule {
         alertController,
         appScope
     )
+
+    @Provides
+    @Singleton
+    fun provideNotificationController(
+        @ApplicationContext context: Context
+    ): NotificationController = NotificationControllerImpl(context)
 }
